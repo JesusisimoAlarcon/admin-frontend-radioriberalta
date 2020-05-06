@@ -8,7 +8,7 @@ import PageTitle from '../../../../Layout/AppMain/PageTitle';
 import MaterialTable from 'material-table'
 import ModalRegistro from './modalRegistro';
 
-import axios from 'axios';
+import Axios from 'axios';
 import { TextareaAutosize } from '@material-ui/core';
 //import avatar from '../../../assets/utils/images/avatars/11.jpg'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
@@ -22,6 +22,11 @@ class FormPrograma extends Component {
             generos: []
         }
         this.tableRef = React.createRef();
+        this.api = Axios.create({
+            baseURL: this.props.API,
+            //timeout: 1000,
+            headers: { 'x-access-token': this.props.TOKEN }
+        })
     }
 
     componentDidMount() {
@@ -30,12 +35,12 @@ class FormPrograma extends Component {
 
     getDatos = async () => {
 
-        const list_programas = await axios.get(this.props.API + 'programa/detalle');
+        const list_programas = await this.api.get('programa/detalle');
         this.setState({
             programas: list_programas.data
         })
 
-        const list_generos = await axios.get(this.props.API + 'genero');
+        const list_generos = await this.api.get('genero');
         this.setState({
             generos: list_generos.data
         })
@@ -47,7 +52,7 @@ class FormPrograma extends Component {
             descripcion: descripcion,
             idgenero: genero
         }
-        await axios.post(this.props.API + 'programa', newPrograma);
+        await this.api.post('programa', newPrograma);
         this.getDatos();
     }
 
@@ -120,7 +125,7 @@ class FormPrograma extends Component {
                                                 onRowUpdate: (newData, oldData) =>
                                                     new Promise((resolve, reject) => {
                                                         setTimeout(async () => {
-                                                            await axios.put(this.props.API + 'programa/' + oldData.idprograma, {
+                                                            await this.api.put('programa/' + oldData.idprograma, {
                                                                 idgenero: newData.genero,
                                                                 programa: newData.programa,
                                                                 descripcion: newData.descripcion
@@ -132,7 +137,7 @@ class FormPrograma extends Component {
                                                 onRowDelete: oldData =>
                                                     new Promise((resolve, reject) => {
                                                         setTimeout(async () => {
-                                                            await axios.delete(this.props.API + 'programa/' + oldData.idprograma);
+                                                            await this.api.delete('programa/' + oldData.idprograma);
                                                             this.getDatos();
                                                             resolve()
                                                         }, 1000)
@@ -150,7 +155,8 @@ class FormPrograma extends Component {
     }
 }
 const mapStateToProps = state => ({
-    API: state.ThemeOptions.API_REST
+    API: state.ThemeOptions.API_REST,
+    TOKEN: state.ThemeOptions.token
 });
 
 const mapDispatchToProps = dispatch => ({});

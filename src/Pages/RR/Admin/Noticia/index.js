@@ -56,7 +56,7 @@ import InlineEditor from '@ckeditor/ckeditor5-build-inline'
 import jwt from 'jsonwebtoken';
 import '@ckeditor/ckeditor5-build-classic/build/translations/es';
 import portada from '../../../../assets/utils/images/dropdown-header/abstract1.jpg'
-
+//import api from '../../../../config/api';
 
 const editorConfiguration = {
     //plugins: [MediaEmbed],
@@ -136,6 +136,11 @@ class FormNoticia extends Component {
         this.dropzoneRef = React.createRef();
         this.dropzoneRef2 = React.createRef();
         this.player = React.createRef();
+        this.api = Axios.create({
+            baseURL: this.props.API,
+            //timeout: 1000,
+            headers: { 'x-access-token': this.props.TOKEN }
+        })
         //this.arrayimages = [];
     }
     notifycorrecto = () => {
@@ -259,7 +264,10 @@ class FormNoticia extends Component {
             dato.append('imagen', this.state.foto[0]);
             fetch(this.props.API + 'noticia/portada', {
                 method: 'post',
-                body: dato
+                body: dato,
+                headers: {
+                    'x-access-token': localStorage.getItem('tokencito')
+                }
             }).then((response) => {
                 return response.json()
             }).then(async (response) => {
@@ -267,7 +275,7 @@ class FormNoticia extends Component {
                 newNoticia.portada = response.imagen
                 newNoticia.etiquetas = this.state.etiquetas.toString()
                 console.log(newNoticia)
-                const resp = await Axios.post(this.props.API + 'noticia', newNoticia);
+                const resp = await this.api.post('noticia', newNoticia);
                 console.log(resp)
                 console.log(resp.data.insertId)
                 const newid = resp.data.insertId
@@ -287,11 +295,31 @@ class FormNoticia extends Component {
         switch (this.state.tipo) {
             case 'audio':
                 console.log(this.state.media[0])
-                const audio = new FormData();
+                let audio = new FormData();
                 audio.append('audio', this.state.media[0]);
+
+                const response = await this.api.post('infografia/audio', audio);
+                console.log(response)
+                /*
+                const infoaudio = {
+                    tipo: this.state.tipo,
+                    infografia: response.recurso,
+                    infotitulo: response.name,
+                    //infocontenido: this.state.infocontenido,
+                    infopie: 'pie',
+                    idnoticia: newid
+                }
+                console.log(infoaudio)
+                const resp = await this.api.post('infografia', infoaudio);
+                console.log(resp)
+                */
+/*
                 fetch(this.props.API + 'infografia/audio', {
                     method: 'post',
-                    body: audio
+                    body: audio,
+                    headers: {
+                        'x-access-token': localStorage.getItem('tokencito')
+                    }
                 }).then((response) => {
                     return response.json()
                 }).then(async (response) => {
@@ -305,9 +333,10 @@ class FormNoticia extends Component {
                         idnoticia: newid
                     }
                     console.log(infoaudio)
-                    const resp = await Axios.post(this.props.API + 'infografia', infoaudio);
+                    const resp = await this.api.post('infografia', infoaudio);
                     console.log(resp)
                 })
+                */
                 break;
             case 'video':
                 if (this.state.tipoinfografia) {
@@ -320,7 +349,7 @@ class FormNoticia extends Component {
                         idnoticia: newid
                     }
                     console.log(infovideo)
-                    const resp = await Axios.post(this.props.API + 'infografia', infovideo);
+                    const resp = await this.api.post('infografia', infovideo);
                     console.log(resp)
                 }
                 else {
@@ -329,7 +358,10 @@ class FormNoticia extends Component {
                     video.append('video', this.state.media[0]);
                     fetch(this.props.API + 'infografia/video', {
                         method: 'post',
-                        body: video
+                        body: video,
+                        headers: {
+                            'x-access-token': localStorage.getItem('tokencito')
+                        }
                     }).then((response) => {
                         return response.json()
                     }).then(async (response) => {
@@ -343,7 +375,7 @@ class FormNoticia extends Component {
                             idnoticia: newid
                         }
                         console.log(infovideo)
-                        const resp = await Axios.post(this.props.API + 'infografia', infovideo);
+                        const resp = await this.api.post('infografia', infovideo);
                         console.log(resp)
                     })
                 }
@@ -355,7 +387,10 @@ class FormNoticia extends Component {
                     imagen.append('imagen', recurso);
                     fetch(this.props.API + 'infografia/images', {
                         method: 'post',
-                        body: imagen
+                        body: imagen,
+                        headers: {
+                            'x-access-token': localStorage.getItem('tokencito')
+                        }
                     }).then((response) => {
                         return response.json()
                     }).then(async (response) => {
@@ -369,7 +404,7 @@ class FormNoticia extends Component {
                             idnoticia: newid
                         }
                         console.log(infoimagen)
-                        const resp = await Axios.post(this.props.API + 'infografia', infoimagen);
+                        const resp = await this.api.post('infografia', infoimagen);
                         console.log(resp)
                     })
                     return 0;
@@ -904,13 +939,7 @@ class FormNoticia extends Component {
                                             );
                                         }}
                                     </Dropzone>
-
-
-
-
-
                                 </Col>
-
                                 <Col lg='4'>
 
                                     <aside style={{

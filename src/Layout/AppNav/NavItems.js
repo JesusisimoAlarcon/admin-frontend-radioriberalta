@@ -23,15 +23,15 @@ export const NoticiasTestNav = [
         content: [
             {
                 label: 'Registrar programa',
-                to: '/admin/programa',
+                to: '#/admin/programa',
             },
             {
                 label: 'Registrar conductor',
-                to: '/admin/conductor',
+                to: '#/admin/conductor',
             },
             {
                 label: 'Crear programacion',
-                to: '/admin/programacion',
+                to: '#/admin/programacion',
             }
         ]
     },

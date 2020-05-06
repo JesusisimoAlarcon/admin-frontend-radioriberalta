@@ -54,7 +54,6 @@ class Login extends Component {
             if (resp.auth) {
                 const usuario = jwt.decode(resp.token).user;
                 this.notificacion(`Bienvenido ${usuario.nombres}`, 'success');
-                
                 this.props.setToken(resp.token);
                 this.props.history.push('/admin');
             }

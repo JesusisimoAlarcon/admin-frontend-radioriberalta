@@ -12,18 +12,12 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-
-
 import Avatar from '@material-ui/core/Avatar';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import axios from 'axios';
-
-//import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-
 import DialogTitle from '@material-ui/core/DialogTitle';
-///import avatar from '../../../assets/utils/images/avatars/10.jpg'
 class FormConductor extends Component {
     constructor(props) {
         super(props)
@@ -34,12 +28,17 @@ class FormConductor extends Component {
         }
         this.tablaRef = React.createRef()
         this.registrar = this.registrar.bind(this);
+        this.api = Axios.create({
+            baseURL: this.props.API,
+            //timeout: 1000,
+            headers: { 'x-access-token': this.props.TOKEN }
+        })
     }
     componentDidMount() {
         this.getConductores();
     }
     getConductores = async () => {
-        const conductores = await Axios.get(this.props.API + 'conductor');
+        const conductores = await this.api.get('conductor');
         this.setState({
             conductores: conductores.data
         })
@@ -208,7 +207,8 @@ class FormConductor extends Component {
     }
 }
 const mapStateToProps = state => ({
-    API: state.ThemeOptions.API_REST
+    API: state.ThemeOptions.API_REST,
+    TOKEN: state.ThemeOptions.token
 });
 
 const mapDispatchToProps = dispatch => ({});

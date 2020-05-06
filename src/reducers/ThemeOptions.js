@@ -120,10 +120,6 @@ export const setBackgroundImage = backgroundImage => ({
 
 const initialState = {
     token: '',
-    axios_instance: axios.create({
-        baseURL: 'https://api.radioriberalta.com.bo/api/',
-        headers: { 'x-access-token': '' }
-    }),
     secciones: [],
     programacion: [],
     programaactual: {},
@@ -155,9 +151,7 @@ const initialState = {
         'Sabado'
     ],
     hoy: new Date().getDay(),
-    hoydia: '',
-    //API_REST: 'https://www.radioriberalta.com.bo:4500/api/'
-    //API_REST: 'https://192.168.1.6:4500/api/'
+    hoydia: '',    
     API_REST: 'https://api.radioriberalta.com.bo/api/'
 }
 
@@ -175,9 +169,6 @@ export default function reducer(state = initialState, action) {
     axios.get(state.API_REST + 'programacion/detalle').then(response => {
         return response.data;
     }).then(response => {
-
-
-
         response.filter((p) => {
             return (p.diasemana === state.hoydia && p.estado === 1)
         }).map(programa => {
@@ -200,9 +191,6 @@ export default function reducer(state = initialState, action) {
         })
         state.programacion = response
     })
-
-
-
     switch (action.type) {
         case SET_TOKEN:
             return {
