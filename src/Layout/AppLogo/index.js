@@ -45,7 +45,7 @@ class HeaderLogo extends React.Component {
         return (
             <Fragment>
                 <div className="app-header__logo">
-                    <Link to='/' replace={true}>
+                    <Link to='/admin' replace={true}>
                         <div className="logo-src" />
                     </Link>
                     <div className="header__pane ml-auto">

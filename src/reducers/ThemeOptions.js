@@ -1,6 +1,8 @@
 import axios from 'axios'
 import sideBar6 from '../assets/utils/images/sidebar/city1.jpg';
 import * as moment from 'moment';
+export const SET_TOKEN = 'THEME_OPTIONS/SET_ENABLE_BACKGROUND_IMAGE';
+
 export const SET_ENABLE_BACKGROUND_IMAGE = 'THEME_OPTIONS/SET_ENABLE_BACKGROUND_IMAGE';
 
 export const SET_ENABLE_MOBILE_MENU = 'THEME_OPTIONS/SET_ENABLE_MOBILE_MENU';
@@ -23,6 +25,12 @@ export const SET_COLOR_SCHEME = 'THEME_OPTIONS/SET_COLOR_SCHEME';
 export const SET_BACKGROUND_IMAGE_OPACITY = 'THEME_OPTIONS/SET_BACKGROUND_IMAGE_OPACITY';
 
 export const SET_HEADER_BACKGROUND_COLOR = 'THEME_OPTIONS/SET_HEADER_BACKGROUND_COLOR';
+
+
+export const setToken = token => ({
+    type: SET_TOKEN,
+    token
+});
 
 
 export const setEnableBackgroundImage = enableBackgroundImage => ({
@@ -111,6 +119,11 @@ export const setBackgroundImage = backgroundImage => ({
 });
 
 const initialState = {
+    token: '',
+    axios_instance: axios.create({
+        baseURL: 'https://api.radioriberalta.com.bo/api/',
+        headers: { 'x-access-token': '' }
+    }),
     secciones: [],
     programacion: [],
     programaactual: {},
@@ -120,7 +133,7 @@ const initialState = {
     enableMobileMenuSmall: true,//habilita el menu movil para que sea visible
     enableBackgroundImage: false,//imagen de fondo para el menu principal
     //para tener abierto el silebar izquierdo => false abierto, true cerrado
-    enableClosedSidebar: true,//deshabilita que el menu se encuentra abierto al iniciar la app
+    enableClosedSidebar: false,//deshabilita que el menu se encuentra abierto al iniciar la app
     enableFixedHeader: true,//habilita para que el menu de cabecera sea fijo
     enableHeaderShadow: true,
     enableSidebarShadow: true,
@@ -188,7 +201,15 @@ export default function reducer(state = initialState, action) {
         state.programacion = response
     })
 
+
+
     switch (action.type) {
+        case SET_TOKEN:
+            return {
+                ...state,
+                token: action.token
+            };
+
         case SET_ENABLE_BACKGROUND_IMAGE:
             return {
                 ...state,

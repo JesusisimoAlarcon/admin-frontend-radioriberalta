@@ -11,7 +11,6 @@ class Nav extends Component {
     render() {
         return (
             <Fragment>
-                <h5 className="app-sidebar__heading">NOTICIAS</h5>
                 <MetisMenu content={NoticiasTestNav} activeLinkFromLocation className="vertical-nav-menu" iconNamePrefix="" classNameStateIcon="pe-7s-angle-down" />
                 {/*}
                 <h5 className="app-sidebar__heading">RIBERALTA</h5>

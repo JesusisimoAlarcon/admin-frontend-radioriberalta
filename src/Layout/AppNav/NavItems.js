@@ -5,15 +5,15 @@ export const NoticiasTestNav = [
         content: [
             {
                 label: 'Agregar nueva noticia',
-                to: '/admin/registrar-noticia'
+                to: '#/admin/registrar-noticia'
             },
             {
                 label: 'Ver mis noticias agregadas',
-                to: '/admin/listar-noticias'
+                to: '#/admin/listar-noticias'
             },
             {
                 label: 'Quitar noticias',
-                to: '/admin/quitar-noticia'
+                to: '#/admin/quitar-noticia'
             }
         ]
     },

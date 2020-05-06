@@ -7,15 +7,15 @@ import Main from './Pages/Main';
 import * as serviceWorker from './serviceWorker';
 import configureStore from './config/configureStore';
 import { Provider } from 'react-redux'
-import { BrowserRouter } from 'react-router-dom'
+import { HashRouter } from 'react-router-dom'
 const store = configureStore();
 const rootElement = document.getElementById('root');
 const renderApp = Component => {
   ReactDOM.render(
     <Provider store={store}>
-      <BrowserRouter>
+      <HashRouter>
         <Component />
-      </BrowserRouter>
+      </HashRouter>
     </Provider>,
     rootElement
   )

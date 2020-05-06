@@ -6,8 +6,6 @@ import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsappIcon from '@material-ui/icons/WhatsApp';
 import { Paper, Divider, Tooltip, CardActionArea, TextareaAutosize, Input } from '@material-ui/core';
 import { Row, Col, Label } from 'reactstrap';
-//import portada from '../../assets/utils/images/dropdown-header/abstract1.jpg'
-//import portada from '../../../assets/test/portada.png'
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
 import VideocamIcon from '@material-ui/icons/Videocam';
@@ -15,85 +13,51 @@ import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import DescriptionIcon from '@material-ui/icons/Description';
 import Rating from '@material-ui/lab/Rating';
 import Box from '@material-ui/core/Box';
-//import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
 import foto from '../../../../assets/test/test04.jpg'
-//import TextField from '@material-ui/core/TextField';
 import esLocale from 'date-fns/locale/es';
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
-
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
-
 import Axios from 'axios';
 import Dropzone from 'react-dropzone';
 import SaveIcon from '@material-ui/icons/Save';
 import { format } from 'date-fns';
 import ReactPlayer from 'react-player';
-
 import Switch from '@material-ui/core/Switch';
-//import Grid from '@material-ui/core/Grid';
-
-
-//import musica from '../../../assets/test/musica.mp3'
-
 import AudioPlayer from 'react-h5-audio-player';
-//import AudioPlayer, { RHAP_UI } from 'react-h5-audio-player';
-//import 'react-h5-audio-player/lib/styles.css';
 import './styleControlAudio.css'
-//import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
-//import YouTubePlayer from 'react-player/lib/players/Streamable'
-//import { Route, Redirect } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
 import PlayCircleOutlineIcon from '@material-ui/icons/PlayCircleOutline';
 import PauseCircleOutlineIcon from '@material-ui/icons/PauseCircleOutline';
 import LoopIcon from '@material-ui/icons/Loop';
 import VolumeOffIcon from '@material-ui/icons/VolumeOff';
-//import VolumeUpIcon from '@material-ui/icons/VolumeUp';
 import LinkOffIcon from '@material-ui/icons/LinkOff';
 import PhotoLibraryIcon from '@material-ui/icons/PhotoLibrary';
 import IconButton from '@material-ui/core/IconButton';
 import InputAdornment from '@material-ui/core/InputAdornment';
-//import PhotoCamera from '@material-ui/icons/PhotoCamera';
-//import CloudUploadIcon from '@material-ui/icons/CloudUpload';
 import AccessTimeIcon from '@material-ui/icons/AccessTime';
 import Image from 'material-ui-image'
 import ImageSearchIcon from '@material-ui/icons/ImageSearch';
 import VideoLibraryIcon from '@material-ui/icons/VideoLibrary';
-//import AlbumIcon from '@material-ui/icons/Album';
 import PlaylistAddIcon from '@material-ui/icons/PlaylistAdd';
-//import CircularProgress from '@material-ui/core/CircularProgress';
-//import { Button } from '@material-ui/core'
-//import { AutoRotatingCarousel } from 'material-auto-rotating-carousel';
-//import { Slide } from 'material-auto-rotating-carousel';
-//import { red, blue, green } from '@material-ui/core/colors'
-
-//const { red, blue, green } = require('@material-ui/core/colors');
-//import { red, blue, green } from '@material-ui/core/colors'
-//import { AutoRotatingCarousel } from 'material-auto-rotating-carousel'
-//const { AutoRotatingCarousel } = require('material-auto-rotating-carousel')
-//import AutoRotatingCarousel from 'material-auto-rotating-carousel';
-//const Slide = require('material-auto-rotating-carousel/lib/Slide');
-//import Slide from 'material-auto-rotating-carousel';
-//const Slide = require('./Slide').default;
 import {
     toast,
     Bounce
 } from 'react-toastify';
-
 import Swiper from './SwipeableTextMobileStepper'
-
 import ChipInput from 'material-ui-chip-input';
-//import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
 import CKEditor from '@ckeditor/ckeditor5-react';
-//import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 import InlineEditor from '@ckeditor/ckeditor5-build-inline'
+import jwt from 'jsonwebtoken';
 import '@ckeditor/ckeditor5-build-classic/build/translations/es';
-//import MediaEmbed from '@ckeditor/ckeditor5-media-embed/src/mediaembed';
+import portada from '../../../../assets/utils/images/dropdown-header/abstract1.jpg'
+
+
 const editorConfiguration = {
     //plugins: [MediaEmbed],
     //plugins: [Essentials, Bold, Italic, Paragraph],
@@ -131,12 +95,8 @@ class FormNoticia extends Component {
 
     constructor(props) {
         super(props)
-
-
-
         this.state = {
-
-
+            conductor: jwt.decode(this.props.TOKEN).user,
             tipoinfografia: true,
             carusel: false,
             //urlinfografia: 'https://youtu.be/CPK_IdHe1Yg',
@@ -146,7 +106,6 @@ class FormNoticia extends Component {
             portada: '',
             tipo: 'tipo',
             seccion: 0,
-            idconductor: 55,
             pieportada: '',
             secciones: this.props.SECCIONES,
             titulo: '',
@@ -286,7 +245,7 @@ class FormNoticia extends Component {
                 contenido: this.state.contenido,
                 tipo: this.state.tipo,
                 idseccion: this.state.seccion,
-                idconductor: this.state.idconductor,
+                idconductor: this.state.conductor.idconductor,
                 fecha: format(this.state.fecha, 'yyyy-MM-dd H:mm:ss'),
                 //fecha: format(this.state.fecha, 'yyyy-MM-dd'),
                 hora: format(this.state.fecha, 'H:mm:ss'),
@@ -315,7 +274,7 @@ class FormNoticia extends Component {
                 this.registrarInfografia(newid);
                 this.notifycorrecto();
 
-                this.props.history.push('/listar-noticias');
+                this.props.history.push('/admin/listar-noticias');
             })
 
         }
@@ -483,7 +442,7 @@ class FormNoticia extends Component {
                                                                 aspectRatio={(16 / 9)}
                                                                 src={
                                                                     this.state.foto.length > 0 ?
-                                                                        URL.createObjectURL(this.state.foto[0]) : null
+                                                                        URL.createObjectURL(this.state.foto[0]) : portada
                                                                 }
                                                             />
                                                         </CardActionArea>
@@ -984,7 +943,8 @@ class FormNoticia extends Component {
 }
 const mapStateToProps = state => ({
     SECCIONES: state.ThemeOptions.secciones,
-    API: state.ThemeOptions.API_REST
+    API: state.ThemeOptions.API_REST,
+    TOKEN: state.ThemeOptions.token
 });
 
 const mapDispatchToProps = dispatch => ({});

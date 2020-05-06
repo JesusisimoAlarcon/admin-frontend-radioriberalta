@@ -16,7 +16,9 @@ import {
 import './login.css'
 import Axios from 'axios';
 import jwt from 'jsonwebtoken';
-
+import {
+    setToken
+} from '../../../reducers/ThemeOptions';
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -34,7 +36,7 @@ class Login extends Component {
                 transition: Bounce,
                 closeButton: true,
                 autoClose: 5000,
-                position: 'bottom-center',
+                position: 'top-right',
                 type
             });
     };
@@ -52,7 +54,9 @@ class Login extends Component {
             if (resp.auth) {
                 const usuario = jwt.decode(resp.token).user;
                 this.notificacion(`Bienvenido ${usuario.nombres}`, 'success');
-                //this.props.history.push('/admin');
+                
+                this.props.setToken(resp.token);
+                this.props.history.push('/admin');
             }
             else {
                 this.notificacion(resp.message, 'error')
@@ -150,9 +154,9 @@ class Login extends Component {
     }
 }
 const mapStateToProps = state => ({
-    SECCIONES: state.ThemeOptions.secciones,
     API: state.ThemeOptions.API_REST
 });
-
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+    setToken: token => dispatch(setToken(token))
+});
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Login));
