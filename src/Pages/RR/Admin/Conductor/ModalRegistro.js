@@ -11,11 +11,6 @@ import AddIcon from '@material-ui/icons/Add';
 import { green, lightBlue, purple } from '@material-ui/core/colors';
 import Dropzone from 'react-dropzone';
 import Avatar from '@material-ui/core/Avatar';
-
-
-
-
-
 class ModalRegistro extends React.Component {
     constructor(props) {
         super(props);
@@ -50,9 +45,6 @@ class ModalRegistro extends React.Component {
         this.dropzoneRef = React.createRef();
         this.toggle = this.toggle.bind(this);
     }
-
-    
-
     onPreviewDrop = (file) => {
         this.setState({
             fotografia: file
@@ -74,8 +66,6 @@ class ModalRegistro extends React.Component {
             [e.target.name]: e.target.value
         })
     }
-
-
     onActualizar = () => {
         this.setState({
             newConductor: {
@@ -104,7 +94,6 @@ class ModalRegistro extends React.Component {
         const { handleConductor } = this.props
         return (
             <div>
-                
                 <Fab color='secondary' onClick={this.toggle}>
                     <AddIcon />
                 </Fab>
@@ -287,5 +276,4 @@ class ModalRegistro extends React.Component {
         );
     }
 }
-
 export default ModalRegistro;

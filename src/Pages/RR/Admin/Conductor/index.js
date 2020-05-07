@@ -57,7 +57,7 @@ class FormConductor extends Component {
             }
         });
         await response.json();
-        this.getConductores();
+        await this.getConductores();
     }
 
 
