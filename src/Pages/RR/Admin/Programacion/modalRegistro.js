@@ -13,12 +13,12 @@ import {
     Col
 } from 'reactstrap';
 import Axios from 'axios';
-
+import { connect } from 'react-redux';
 import esLocale from 'date-fns/locale/es';
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from "@material-ui/pickers";
 import { Avatar, Select, MenuItem, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
-export default class ModalRegistro extends Component {
+class ModalRegistro extends Component {
 
     constructor(props) {
         super(props)
@@ -34,15 +34,20 @@ export default class ModalRegistro extends Component {
             conductores: []
         }
         this.toggle = this.toggle.bind(this);
+        this.api = Axios.create({
+            baseURL: this.props.API,
+            //timeout: 1000,
+            headers: { 'x-access-token': this.props.TOKEN }
+        })
     }
 
     componentDidMount = async () => {
-        const resp_programas = await Axios.get(this.props.API + 'programa/detalle');
+        const resp_programas = await this.api.get('programa/detalle');
         this.setState({
             programas: resp_programas.data
         })
 
-        const resp_conductores = await Axios.get(this.props.API + 'conductor');
+        const resp_conductores = await this.api.get('conductor');
         this.setState({
             conductores: resp_conductores.data
         })
@@ -168,7 +173,7 @@ export default class ModalRegistro extends Component {
                                 >
 
                                     <MenuItem value='0'>Seleccion un programa</MenuItem>
-                                    {this.state.programas.map(programa =>
+                                    {this.state.programas && this.state.programas.map(programa =>
                                         <MenuItem component='div' key={programa.idprograma} value={programa.idprograma}>
                                             <ListItem>
                                                 <ListItemAvatar>
@@ -235,3 +240,10 @@ export default class ModalRegistro extends Component {
         )
     }
 }
+const mapStateToProps = state => ({
+    API: state.ThemeOptions.API_REST,
+    TOKEN: state.ThemeOptions.token
+});
+
+const mapDispatchToProps = dispatch => ({});
+export default connect(mapStateToProps, mapDispatchToProps)(ModalRegistro);

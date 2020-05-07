@@ -79,7 +79,6 @@ class FormPrograma extends Component {
                                     <FormGroup>
                                         <ModalRegistro
                                             handleList={this.recargar}
-                                            api={this.props.API}
                                             generos={this.state.generos}
                                         />
                                     </FormGroup>

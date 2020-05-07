@@ -45,10 +45,7 @@ function a11yProps(index) {
         'aria-controls': `scrollable-auto-tabpanel-${index}`,
     };
 }
-
 class FormProgramacion extends Component {
-
-
     constructor(props) {
         super(props);
         this.state = {
@@ -65,12 +62,12 @@ class FormProgramacion extends Component {
             ],
             hoy: new Date().getDay()
         }
-        this.getDatos();
-        /*
-        this.setState({
-            tab: this.state.dias.indexOf(this.state.hoy)
+        this.api = Axios.create({
+            baseURL: this.props.API,
+            //timeout: 1000,
+            headers: { 'x-access-token': this.props.TOKEN }
         })
-        */
+        this.getDatos();
     }
 
     recargar = async (diasemana, horainicio, horafin, idconductor, idprograma) => {
@@ -83,7 +80,7 @@ class FormProgramacion extends Component {
             estado: true
         }
         console.log(programacion)
-        await Axios.post(this.props.API + 'programacion', programacion);
+        await this.api.post('programacion', programacion);
         this.getDatos();
         this.setState({
             tab: this.state.dias.indexOf(diasemana)
@@ -92,7 +89,7 @@ class FormProgramacion extends Component {
 
     getDatos = async () => {
 
-        const list_programacion = await Axios.get(this.props.API + 'programacion/detalle');
+        const list_programacion = await this.api.get('programacion/detalle');
         this.setState({
             programacion: list_programacion.data
         })
@@ -175,7 +172,7 @@ class FormProgramacion extends Component {
                                                 <Switch
                                                     checked={rowData.estado === 1 ? true : false}
                                                     onChange={async (event) => {
-                                                        await Axios.put(this.props.API + 'programacion/' + rowData.idprogramacion, {
+                                                        await this.api.put('programacion/' + rowData.idprogramacion, {
                                                             estado: !rowData.estado
                                                         });
                                                         this.getDatos();
@@ -199,7 +196,7 @@ class FormProgramacion extends Component {
                                     onRowDelete: oldData =>
                                         new Promise((resolve, reject) => {
                                             setTimeout(async () => {
-                                                await Axios.delete(this.props.API + 'programacion/' + oldData.idprogramacion);
+                                                await this.api.delete('programacion/' + oldData.idprogramacion);
                                                 this.getDatos();
                                                 resolve()
                                             }, 1000)
@@ -217,7 +214,8 @@ class FormProgramacion extends Component {
     }
 }
 const mapStateToProps = state => ({
-    API: state.ThemeOptions.API_REST
+    API: state.ThemeOptions.API_REST,
+    TOKEN: state.ThemeOptions.token
 });
 
 const mapDispatchToProps = dispatch => ({});
