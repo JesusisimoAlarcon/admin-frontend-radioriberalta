@@ -14,7 +14,6 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Avatar from '@material-ui/core/Avatar';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import axios from 'axios';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogTitle from '@material-ui/core/DialogTitle';
@@ -30,8 +29,8 @@ class FormConductor extends Component {
         this.registrar = this.registrar.bind(this);
         this.api = Axios.create({
             baseURL: this.props.API,
-            //timeout: 1000,
             headers: {
+                'Access-Control-Allow-Origin': 'http://localhost:3000',
                 'x-access-token': this.props.TOKEN
             }
         })
@@ -49,27 +48,16 @@ class FormConductor extends Component {
     registrar = async (programa, foto) => {
         const dato = new FormData();
         dato.append('imagen', foto[0]);
-        /*
-        const response = await (await this.api.post('conductor/fotografia', dato)).data;
-        console.log(response)
-        programa.fotografia = response.imagen
-        const resp = await this.api.post('conductor', programa);
-        console.log(resp)
-        this.getConductores();
-        */
-        fetch(this.props.API + 'conductor/fotografia', {
+        dato.append('conductor', JSON.stringify(programa));
+        const response = await fetch(this.props.API + 'conductor/dump', {
             method: 'post',
-            body: dato
-        }).then((response) => {
-            return response.json()
-        }).then(async (response) => {
-            console.log(response)
-            programa.fotografia = response.imagen
-            const resp = await this.api.post('conductor', programa);
-            console.log(resp)
-            this.getConductores();
-        })
-        
+            body: dato,
+            headers: {
+                'x-access-token': this.props.TOKEN
+            }
+        });
+        await response.json();
+        this.getConductores();
     }
 
 
@@ -77,7 +65,7 @@ class FormConductor extends Component {
     eliminar = () => {
         //alert(rowData.idconductor);
         setTimeout(async () => {
-            await axios.delete(this.props.API + 'conductor/' + this.state.idconductor);
+            await this.api.delete('conductor/' + this.state.idconductor);
             this.getConductores();
             this.handleClose();
         }, 1000)

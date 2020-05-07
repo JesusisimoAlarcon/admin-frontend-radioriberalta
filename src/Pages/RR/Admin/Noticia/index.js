@@ -254,16 +254,50 @@ class FormNoticia extends Component {
                 idseccion: this.state.seccion,
                 idconductor: this.state.conductor.idconductor,
                 fecha: format(this.state.fecha, 'yyyy-MM-dd H:mm:ss'),
-                //fecha: format(this.state.fecha, 'yyyy-MM-dd'),
                 hora: format(this.state.fecha, 'H:mm:ss'),
                 prioridad: this.state.prioridad,
                 infocontenido: this.state.infocontenido,
+                etiquetas: this.state.etiquetas.toString(),
                 estado: true
             }
-            //console.log(newNoticia);
-            //console.log(this.state.foto[0])
+
             const dato = new FormData();
             dato.append('imagen', this.state.foto[0]);
+            dato.append('noticia', JSON.stringify(newNoticia));
+            const response = await fetch(this.props.API + 'noticia/portada', {
+                method: 'post',
+                body: dato,
+                headers: {
+                    'x-access-token': this.props.TOKEN
+                }
+            });
+            const data = await response.json();
+            console.log(data)
+            /*
+            fetch(this.props.API + 'noticia/portada', {
+                method: 'post',
+                body: dato,
+                headers: {
+                    'x-access-token': this.props.TOKEN
+                }
+            }).then((response) => {
+                return response.json()
+            }).then(async (response) => {
+                console.log(response)
+                newNoticia.portada = response.imagen
+                newNoticia.etiquetas = this.state.etiquetas.toString()
+                console.log(newNoticia)
+                const resp = await this.api.post('noticia', newNoticia);
+                console.log(resp)
+                console.log(resp.data.insertId)
+                const newid = resp.data.insertId
+                this.registrarInfografia(newid);
+                this.notifycorrecto();
+
+                this.props.history.push('/admin/listar-noticias');
+            })
+*/
+            /*
             const response = await (await this.api.post('noticia/portada', dato)).data;
             newNoticia.portada = response.imagen;
             newNoticia.etiquetas = this.state.etiquetas.toString();
@@ -273,6 +307,7 @@ class FormNoticia extends Component {
             console.log(resp.data.insertId)
             const newid = resp.data.insertId
             console.log(newid)
+            */
             //this.registrarInfografia(newid);
             //this.notifycorrecto();
 
