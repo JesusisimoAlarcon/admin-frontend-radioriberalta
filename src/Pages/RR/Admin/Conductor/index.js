@@ -31,7 +31,9 @@ class FormConductor extends Component {
         this.api = Axios.create({
             baseURL: this.props.API,
             //timeout: 1000,
-            headers: { 'x-access-token': this.props.TOKEN }
+            headers: {
+                'x-access-token': this.props.TOKEN
+            }
         })
     }
     componentDidMount() {
@@ -47,6 +49,14 @@ class FormConductor extends Component {
     registrar = async (programa, foto) => {
         const dato = new FormData();
         dato.append('imagen', foto[0]);
+        /*
+        const response = await (await this.api.post('conductor/fotografia', dato)).data;
+        console.log(response)
+        programa.fotografia = response.imagen
+        const resp = await this.api.post('conductor', programa);
+        console.log(resp)
+        this.getConductores();
+        */
         fetch(this.props.API + 'conductor/fotografia', {
             method: 'post',
             body: dato
@@ -55,10 +65,11 @@ class FormConductor extends Component {
         }).then(async (response) => {
             console.log(response)
             programa.fotografia = response.imagen
-            const resp = await Axios.post(this.props.API + 'conductor', programa);
+            const resp = await this.api.post('conductor', programa);
             console.log(resp)
             this.getConductores();
         })
+        
     }
 
 

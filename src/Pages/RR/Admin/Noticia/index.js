@@ -139,7 +139,9 @@ class FormNoticia extends Component {
         this.api = Axios.create({
             baseURL: this.props.API,
             //timeout: 1000,
-            headers: { 'x-access-token': this.props.TOKEN }
+            headers: {
+                'x-access-token': this.props.TOKEN
+            }
         })
         //this.arrayimages = [];
     }
@@ -239,7 +241,7 @@ class FormNoticia extends Component {
 
         }
     }
-    registrar = (eventt) => {
+    registrar = async (eventt) => {
         console.log(this.verificarcampos())
         if (this.verificarcampos()) {
             const newNoticia = {
@@ -259,14 +261,29 @@ class FormNoticia extends Component {
                 estado: true
             }
             //console.log(newNoticia);
-            console.log(this.state.foto[0])
+            //console.log(this.state.foto[0])
             const dato = new FormData();
             dato.append('imagen', this.state.foto[0]);
+            const response = await (await this.api.post('noticia/portada', dato)).data;
+            newNoticia.portada = response.imagen;
+            newNoticia.etiquetas = this.state.etiquetas.toString();
+            console.log(newNoticia)
+            const resp = await this.api.post('noticia', newNoticia);
+            console.log(resp)
+            console.log(resp.data.insertId)
+            const newid = resp.data.insertId
+            console.log(newid)
+            //this.registrarInfografia(newid);
+            //this.notifycorrecto();
+
+            //this.props.history.push('/admin/listar-noticias');
+
+            /*
             fetch(this.props.API + 'noticia/portada', {
                 method: 'post',
                 body: dato,
                 headers: {
-                    'x-access-token': localStorage.getItem('tokencito')
+                    'x-access-token': this.props.TOKEN
                 }
             }).then((response) => {
                 return response.json()
@@ -284,6 +301,7 @@ class FormNoticia extends Component {
 
                 this.props.history.push('/admin/listar-noticias');
             })
+            */
 
         }
         else {
@@ -313,30 +331,30 @@ class FormNoticia extends Component {
                 const resp = await this.api.post('infografia', infoaudio);
                 console.log(resp)
                 */
-/*
-                fetch(this.props.API + 'infografia/audio', {
-                    method: 'post',
-                    body: audio,
-                    headers: {
-                        'x-access-token': localStorage.getItem('tokencito')
-                    }
-                }).then((response) => {
-                    return response.json()
-                }).then(async (response) => {
-                    console.log(response)
-                    const infoaudio = {
-                        tipo: this.state.tipo,
-                        infografia: response.recurso,
-                        infotitulo: response.name,
-                        //infocontenido: this.state.infocontenido,
-                        infopie: 'pie',
-                        idnoticia: newid
-                    }
-                    console.log(infoaudio)
-                    const resp = await this.api.post('infografia', infoaudio);
-                    console.log(resp)
-                })
-                */
+                /*
+                                fetch(this.props.API + 'infografia/audio', {
+                                    method: 'post',
+                                    body: audio,
+                                    headers: {
+                                        'x-access-token': localStorage.getItem('tokencito')
+                                    }
+                                }).then((response) => {
+                                    return response.json()
+                                }).then(async (response) => {
+                                    console.log(response)
+                                    const infoaudio = {
+                                        tipo: this.state.tipo,
+                                        infografia: response.recurso,
+                                        infotitulo: response.name,
+                                        //infocontenido: this.state.infocontenido,
+                                        infopie: 'pie',
+                                        idnoticia: newid
+                                    }
+                                    console.log(infoaudio)
+                                    const resp = await this.api.post('infografia', infoaudio);
+                                    console.log(resp)
+                                })
+                                */
                 break;
             case 'video':
                 if (this.state.tipoinfografia) {
