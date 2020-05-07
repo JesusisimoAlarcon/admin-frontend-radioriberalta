@@ -140,17 +140,15 @@ class FormNoticia extends Component {
             baseURL: this.props.API,
             headers: {
                 'x-access-token': this.props.TOKEN
-            }
-            /*,
+            },
+            
             onUploadProgress: (e) => {
                 console.log(e.loaded)
                 console.log(e.total)
                 this.setState({
                     progreso: (e.loaded * 100) / e.total
                 })
-            },
-            */
-
+            }
         })
     }
     notifycorrecto = () => {
@@ -448,7 +446,6 @@ class FormNoticia extends Component {
                                             <WhatsappIcon fontSize='small' />
                                         </Fab>
                                     </Tooltip>
-                                    <CircularProgress variant="static" value={this.state.progreso} />
                                 </div>
                             </aside>
                         </Col>
