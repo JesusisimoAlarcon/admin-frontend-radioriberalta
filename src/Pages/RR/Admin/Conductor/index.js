@@ -49,21 +49,19 @@ class FormConductor extends Component {
         const dato = new FormData();
         dato.append('imagen', foto[0]);
         dato.append('conductor', JSON.stringify(programa));
-        const response = await fetch(this.props.API + 'conductor/dump', {
+        await fetch(this.props.API + 'conductor/dump', {
             method: 'post',
             body: dato,
             headers: {
                 'x-access-token': this.props.TOKEN
             }
         });
-        await response.json();
         await this.getConductores();
     }
 
 
 
     eliminar = () => {
-        //alert(rowData.idconductor);
         setTimeout(async () => {
             await this.api.delete('conductor/' + this.state.idconductor);
             this.getConductores();

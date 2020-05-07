@@ -7,12 +7,9 @@ import {
 import PageTitle from '../../../../Layout/AppMain/PageTitle';
 import MaterialTable from 'material-table'
 import ModalRegistro from './modalRegistro';
-
 import Axios from 'axios';
 import { TextareaAutosize } from '@material-ui/core';
-//import avatar from '../../../assets/utils/images/avatars/11.jpg'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-import { Link } from 'react-router-dom';
 class FormPrograma extends Component {
 
     constructor(props) {
@@ -24,7 +21,6 @@ class FormPrograma extends Component {
         this.tableRef = React.createRef();
         this.api = Axios.create({
             baseURL: this.props.API,
-            //timeout: 1000,
             headers: { 'x-access-token': this.props.TOKEN }
         })
     }
@@ -64,7 +60,6 @@ class FormPrograma extends Component {
                     subheading="Ingrese los datos correspondientes para la creacion y publicacion de su programa radial."
                     icon="pe-7s-radio text-primary"
                 />
-                <Link to='/admin/programa' replace>TEST</Link>
                 <ReactCSSTransitionGroup
                     component="div"
                     transitionName="TabsAnimation"

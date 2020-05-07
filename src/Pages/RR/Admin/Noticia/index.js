@@ -4,7 +4,7 @@ import Fab from '@material-ui/core/Fab';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsappIcon from '@material-ui/icons/WhatsApp';
-import { Paper, Divider, Tooltip, CardActionArea, TextareaAutosize, Input } from '@material-ui/core';
+import { Paper, Divider, Tooltip, CardActionArea, TextareaAutosize, Input, CircularProgress, LinearProgress } from '@material-ui/core';
 import { Row, Col, Label } from 'reactstrap';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -17,7 +17,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
-import foto from '../../../../assets/test/test04.jpg'
 import esLocale from 'date-fns/locale/es';
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, DateTimePicker } from "@material-ui/pickers";
@@ -96,7 +95,8 @@ class FormNoticia extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            conductor: jwt.decode(this.props.TOKEN).user,
+            progreso: 0,
+            autor: jwt.decode(this.props.TOKEN).user,
             tipoinfografia: true,
             carusel: false,
             //urlinfografia: 'https://youtu.be/CPK_IdHe1Yg',
@@ -138,12 +138,20 @@ class FormNoticia extends Component {
         this.player = React.createRef();
         this.api = Axios.create({
             baseURL: this.props.API,
-            //timeout: 1000,
             headers: {
                 'x-access-token': this.props.TOKEN
             }
+            /*,
+            onUploadProgress: (e) => {
+                console.log(e.loaded)
+                console.log(e.total)
+                this.setState({
+                    progreso: (e.loaded * 100) / e.total
+                })
+            },
+            */
+
         })
-        //this.arrayimages = [];
     }
     notifycorrecto = () => {
         this.toastId =
@@ -238,7 +246,6 @@ class FormNoticia extends Component {
             else {
                 return false;
             }
-
         }
     }
     registrar = async (eventt) => {
@@ -252,7 +259,7 @@ class FormNoticia extends Component {
                 contenido: this.state.contenido,
                 tipo: this.state.tipo,
                 idseccion: this.state.seccion,
-                idconductor: this.state.conductor.idconductor,
+                idconductor: this.state.autor.idconductor,
                 fecha: format(this.state.fecha, 'yyyy-MM-dd H:mm:ss'),
                 hora: format(this.state.fecha, 'H:mm:ss'),
                 prioridad: this.state.prioridad,
@@ -260,84 +267,26 @@ class FormNoticia extends Component {
                 etiquetas: this.state.etiquetas.toString(),
                 estado: true
             }
-
-            const dato = new FormData();
-            dato.append('imagen', this.state.foto[0]);
-            dato.append('noticia', JSON.stringify(newNoticia));
-            const response = await fetch(this.props.API + 'noticia/portada', {
+            try {
+                const dato = new FormData();
+                dato.append('imagen', this.state.foto[0]);
+                dato.append('noticia', JSON.stringify(newNoticia));
+                const response = await (await this.api.post('noticia', dato)).data;
+                console.log(response)
+            } catch (error) {
+                console.log(error)
+            }
+            /*const response = await fetch(this.props.API + 'noticia', {
                 method: 'post',
                 body: dato,
                 headers: {
                     'x-access-token': this.props.TOKEN
                 }
             });
-            const data = await response.json();
-            console.log(data)
-            /*
-            fetch(this.props.API + 'noticia/portada', {
-                method: 'post',
-                body: dato,
-                headers: {
-                    'x-access-token': this.props.TOKEN
-                }
-            }).then((response) => {
-                return response.json()
-            }).then(async (response) => {
-                console.log(response)
-                newNoticia.portada = response.imagen
-                newNoticia.etiquetas = this.state.etiquetas.toString()
-                console.log(newNoticia)
-                const resp = await this.api.post('noticia', newNoticia);
-                console.log(resp)
-                console.log(resp.data.insertId)
-                const newid = resp.data.insertId
-                this.registrarInfografia(newid);
-                this.notifycorrecto();
-
-                this.props.history.push('/admin/listar-noticias');
-            })
-*/
-            /*
-            const response = await (await this.api.post('noticia/portada', dato)).data;
-            newNoticia.portada = response.imagen;
-            newNoticia.etiquetas = this.state.etiquetas.toString();
-            console.log(newNoticia)
-            const resp = await this.api.post('noticia', newNoticia);
-            console.log(resp)
-            console.log(resp.data.insertId)
-            const newid = resp.data.insertId
-            console.log(newid)
             */
-            //this.registrarInfografia(newid);
-            //this.notifycorrecto();
+            //const data = await response.json();
 
-            //this.props.history.push('/admin/listar-noticias');
-
-            /*
-            fetch(this.props.API + 'noticia/portada', {
-                method: 'post',
-                body: dato,
-                headers: {
-                    'x-access-token': this.props.TOKEN
-                }
-            }).then((response) => {
-                return response.json()
-            }).then(async (response) => {
-                console.log(response)
-                newNoticia.portada = response.imagen
-                newNoticia.etiquetas = this.state.etiquetas.toString()
-                console.log(newNoticia)
-                const resp = await this.api.post('noticia', newNoticia);
-                console.log(resp)
-                console.log(resp.data.insertId)
-                const newid = resp.data.insertId
-                this.registrarInfografia(newid);
-                this.notifycorrecto();
-
-                this.props.history.push('/admin/listar-noticias');
-            })
-            */
-
+            //this.registrarInfografia(data.insertId)
         }
         else {
             this.notifyvalidacion()
@@ -442,7 +391,7 @@ class FormNoticia extends Component {
                         method: 'post',
                         body: imagen,
                         headers: {
-                            'x-access-token': localStorage.getItem('tokencito')
+                            'x-access-token': this.props.TOKEN
                         }
                     }).then((response) => {
                         return response.json()
@@ -474,6 +423,7 @@ class FormNoticia extends Component {
         return (
             <Fragment>
                 <Paper my={2} className='p-3 mb-2'>
+                    <LinearProgress className='m-3' variant="determinate" value={this.state.progreso} color="secondary" />
                     <Row>
                         <Col lg='1'>
                             <aside style={{
@@ -498,6 +448,7 @@ class FormNoticia extends Component {
                                             <WhatsappIcon fontSize='small' />
                                         </Fab>
                                     </Tooltip>
+                                    <CircularProgress variant="static" value={this.state.progreso} />
                                 </div>
                             </aside>
                         </Col>
@@ -505,7 +456,6 @@ class FormNoticia extends Component {
                         <Col lg='11'>
                             <Row>
                                 <Col lg='8'>
-
                                     <Dropzone
                                         ref={this.dropzoneRef}
                                         noClick
@@ -668,12 +618,15 @@ class FormNoticia extends Component {
                                     <div>
                                         <ListItem>
                                             <ListItemAvatar>
-                                                <Avatar src={foto} variant="rounded" fontSize='small' />
-
+                                                <Avatar
+                                                    variant="rounded"
+                                                    fontSize='small'
+                                                    src={this.props.API + 'static/perfiles/' + this.state.autor.fotografia}
+                                                />
                                             </ListItemAvatar>
                                             <ListItemText
-                                                primary="Radio Riberalta"
-                                                secondary='@alarconcito'
+                                                primary={this.state.autor.nombres + ' ' + this.state.autor.apellidos}
+                                                secondary={this.state.autor.correo}
                                             />
                                         </ListItem>
                                     </div>
