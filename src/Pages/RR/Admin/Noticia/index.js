@@ -4,7 +4,7 @@ import Fab from '@material-ui/core/Fab';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsappIcon from '@material-ui/icons/WhatsApp';
-import { Paper, Divider, Tooltip, CardActionArea, TextareaAutosize, Input, CircularProgress, LinearProgress } from '@material-ui/core';
+import { Paper, Divider, Tooltip, CardActionArea, TextareaAutosize, Input, LinearProgress } from '@material-ui/core';
 import { Row, Col, Label } from 'reactstrap';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -141,7 +141,7 @@ class FormNoticia extends Component {
             headers: {
                 'x-access-token': this.props.TOKEN
             },
-            
+
             onUploadProgress: (e) => {
                 console.log(e.loaded)
                 console.log(e.total)
@@ -271,6 +271,17 @@ class FormNoticia extends Component {
                 dato.append('noticia', JSON.stringify(newNoticia));
                 const response = await (await this.api.post('noticia', dato)).data;
                 console.log(response)
+                /*
+                const response = await fetch(this.props.API + 'noticia', {
+                    method: 'post',
+                    body: dato,
+                    headers: {
+                        'x-access-token': this.props.TOKEN,
+                        'Access-Control-Allow-Origin': 'http://localhost:3000'
+                    }
+                });
+                */
+                //const test = await response.json();
             } catch (error) {
                 console.log(error)
             }

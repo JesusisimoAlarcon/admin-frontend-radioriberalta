@@ -126,7 +126,7 @@ const initialState = {
     backgroundColor: 'bg-white sidebar-text-dark',
     //backgroundColor: 'swatch-holder bg-light',
     headerBackgroundColor: 'bg-danger active active header-text-light',
-    enableMobileMenuSmall: true,//habilita el menu movil para que sea visible
+    enableMobileMenuSmall: false,//habilita el menu movil para que sea visible
     enableBackgroundImage: false,//imagen de fondo para el menu principal
     //para tener abierto el silebar izquierdo => false abierto, true cerrado
     enableClosedSidebar: false,//deshabilita que el menu se encuentra abierto al iniciar la app
@@ -139,8 +139,7 @@ const initialState = {
     backgroundImage: sideBar6,
     backgroundImageOpacity: 'opacity-06',
     enablePageTitleIcon: true,
-    enablePageTitleSubheading: true,
-    enablePageTabsAlt: false,
+    enablePageTitleSubheading: true,    enablePageTabsAlt: false,
     diasTabs: [
         'Domingo',
         'Lunes',
@@ -152,9 +151,9 @@ const initialState = {
     ],
     hoy: new Date().getDay(),
     hoydia: '',    
-    API_REST: 'https://api.radioriberalta.com.bo/api/'
+    //API_REST: 'https://api.radioriberalta.com.bo/api/'
+   API_REST: 'http://192.34.58.196:4500/api/'
 }
-
 
 export default function reducer(state = initialState, action) {
 
