@@ -101,7 +101,7 @@ class FormNoticia extends Component {
             carusel: false,
             urlinfografia: '',
             foto: '',
-            media: [],
+            media: '',
             portada: '',
             tipo: 'tipo',
             seccion: 0,
@@ -268,10 +268,15 @@ class FormNoticia extends Component {
                 dato.append('portada', this.state.foto[0]);
                 dato.append('noticia', JSON.stringify(newNoticia));
                 dato.append('tipoinfografia', this.state.tipo);
-                dato.append('urlinfografia', this.state.urlinfografia);
+                dato.append('urlinfografia', this.state.tipo === 'video' ? this.state.urlinfografia : '');
                 console.log(this.state.media)
-
-                this.state.media.map(recurso =>
+                //dato.append('recurso', this.state.media)
+                if (this.state.tipo === 'nota' || this.state.urlinfografia) {
+                    this.setState({
+                        media: ''
+                    })
+                }
+                this.state.media && this.state.media.map(recurso =>
                     dato.append('recurso', recurso)
                 )
                 //dato.append('recurso', this.state.tipo === 'image' ? this.state.media : this.state.media[0]);
