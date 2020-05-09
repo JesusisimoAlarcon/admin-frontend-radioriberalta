@@ -279,10 +279,13 @@ class FormNoticia extends Component {
                 this.state.media && this.state.media.map(recurso =>
                     dato.append('recurso', recurso)
                 )
-                //dato.append('recurso', this.state.tipo === 'image' ? this.state.media : this.state.media[0]);
-                //dato.append('recurso', this.state.media[0]);
-                const response = await (await this.api.post('noticia', dato)).data;
-                console.log(response)
+                try {
+                    const response = await (await this.api.post('noticia', dato)).data;
+                    console.log(response)
+                } catch (error) {
+                    console.log(error)
+                }
+
                 /*
                 const response = await fetch(this.props.API + 'noticia', {
                     method: 'post',
