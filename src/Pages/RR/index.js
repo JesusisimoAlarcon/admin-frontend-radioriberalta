@@ -10,7 +10,6 @@ import FormNoticia from './Admin/Noticia';
 import ListNoticias from './Admin/NoticiasList';
 import Admin from './Admin';
 
-
 const RR = ({ match }) => {
     return (
         <Fragment>

@@ -99,7 +99,6 @@ class FormNoticia extends Component {
             autor: jwt.decode(this.props.TOKEN).user,
             tipoinfografia: true,
             carusel: false,
-            //urlinfografia: 'https://youtu.be/CPK_IdHe1Yg',
             urlinfografia: '',
             foto: '',
             media: [],
@@ -141,7 +140,6 @@ class FormNoticia extends Component {
             headers: {
                 'x-access-token': this.props.TOKEN
             },
-
             onUploadProgress: (e) => {
                 console.log(e.loaded)
                 console.log(e.total)
@@ -160,7 +158,6 @@ class FormNoticia extends Component {
                 position: 'bottom-center',
                 type: 'success'
             });
-        //<Redirect to="/noticias/riberalta" />
     };
 
 
@@ -225,6 +222,7 @@ class FormNoticia extends Component {
     setContenido = (event, editor) => {
         this.setState({ contenido: editor.getData() })
     }
+
     verificarcampos() {
         if (this.state.foto === '' || this.state.seccion === 0 ||
             this.state.tipo === 'tipo' || this.state.titulo === '' ||
@@ -246,7 +244,7 @@ class FormNoticia extends Component {
             }
         }
     }
-    registrar = async (eventt) => {
+    registrar = async (event) => {
         console.log(this.verificarcampos())
         if (this.verificarcampos()) {
             const newNoticia = {
@@ -264,11 +262,20 @@ class FormNoticia extends Component {
                 infocontenido: this.state.infocontenido,
                 etiquetas: this.state.etiquetas.toString(),
                 estado: true
-            }
+            };
             try {
                 const dato = new FormData();
-                dato.append('imagen', this.state.foto[0]);
+                dato.append('portada', this.state.foto[0]);
                 dato.append('noticia', JSON.stringify(newNoticia));
+                dato.append('tipoinfografia', this.state.tipo);
+                dato.append('urlinfografia', this.state.urlinfografia);
+                console.log(this.state.media)
+
+                this.state.media.map(recurso =>
+                    dato.append('recurso', recurso)
+                )
+                //dato.append('recurso', this.state.tipo === 'image' ? this.state.media : this.state.media[0]);
+                //dato.append('recurso', this.state.media[0]);
                 const response = await (await this.api.post('noticia', dato)).data;
                 console.log(response)
                 /*
@@ -308,7 +315,6 @@ class FormNoticia extends Component {
                 console.log(this.state.media[0])
                 let audio = new FormData();
                 audio.append('audio', this.state.media[0]);
-
                 const response = await this.api.post('infografia/audio', audio);
                 console.log(response)
                 /*

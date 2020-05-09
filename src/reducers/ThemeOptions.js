@@ -139,7 +139,7 @@ const initialState = {
     backgroundImage: sideBar6,
     backgroundImageOpacity: 'opacity-06',
     enablePageTitleIcon: true,
-    enablePageTitleSubheading: true,    enablePageTabsAlt: false,
+    enablePageTitleSubheading: true, enablePageTabsAlt: false,
     diasTabs: [
         'Domingo',
         'Lunes',
@@ -150,9 +150,10 @@ const initialState = {
         'Sabado'
     ],
     hoy: new Date().getDay(),
-    hoydia: '',    
+    hoydia: '',
     //API_REST: 'https://api.radioriberalta.com.bo/api/'
-   API_REST: 'http://192.34.58.196:4500/api/'
+    API_REST: 'http://192.34.58.196:4500/api/'
+    //API_REST: 'http://192.168.1.7:4500/api/'
 }
 
 export default function reducer(state = initialState, action) {
