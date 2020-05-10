@@ -79,7 +79,6 @@ class FormConductor extends Component {
         return (
 
             <Fragment>
-
                 <Dialog
                     open={this.state.open}
                     onClose={this.handleClose}

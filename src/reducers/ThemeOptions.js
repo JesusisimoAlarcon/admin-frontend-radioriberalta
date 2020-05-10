@@ -151,8 +151,8 @@ const initialState = {
     ],
     hoy: new Date().getDay(),
     hoydia: '',
-    API_REST: 'https://api.radioriberalta.com.bo/api/'
-    //API_REST: 'http://192.34.58.196:4500/api/'
+    //API_REST: 'https://api.radioriberalta.com.bo/api/'
+    API_REST: 'http://192.34.58.196:4500/api/'
     //API_REST: 'http://192.168.1.7:4500/api/'
 }
 

@@ -68,7 +68,7 @@ class ListNoticias extends Component {
                                     <center>
                                         <Avatar
                                             variant="rounded"
-                                            src={this.props.API + 'static/portadas/' + rowData.portada}
+                                            src={this.props.API + 'static/portada/' + rowData.portada}
                                             style={{ width: 90, height: 90 }}
                                         />
                                     </center>

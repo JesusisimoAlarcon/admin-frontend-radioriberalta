@@ -4,7 +4,7 @@ import Fab from '@material-ui/core/Fab';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsappIcon from '@material-ui/icons/WhatsApp';
-import { Paper, Divider, Tooltip, CardActionArea, TextareaAutosize, Input, LinearProgress } from '@material-ui/core';
+import { Paper, Divider, Tooltip, CardActionArea, TextareaAutosize, Input, Dialog, DialogTitle, CircularProgress, Typography } from '@material-ui/core';
 import { Row, Col, Label } from 'reactstrap';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -55,8 +55,7 @@ import InlineEditor from '@ckeditor/ckeditor5-build-inline'
 import jwt from 'jsonwebtoken';
 import '@ckeditor/ckeditor5-build-classic/build/translations/es';
 import portada from '../../../../assets/utils/images/dropdown-header/abstract1.jpg'
-//import api from '../../../../config/api';
-
+import CheckIcon from '@material-ui/icons/Check';
 const editorConfiguration = {
     //plugins: [MediaEmbed],
     //plugins: [Essentials, Bold, Italic, Paragraph],
@@ -90,11 +89,10 @@ const editorConfiguration = {
 };
 
 class FormNoticia extends Component {
-
-
     constructor(props) {
         super(props)
         this.state = {
+            open: false,
             progreso: 0,
             autor: jwt.decode(this.props.TOKEN).user,
             tipoinfografia: true,
@@ -140,12 +138,19 @@ class FormNoticia extends Component {
             headers: {
                 'x-access-token': this.props.TOKEN
             },
+            timeout: 0,
             onUploadProgress: (e) => {
                 console.log(e.loaded)
                 console.log(e.total)
                 this.setState({
                     progreso: (e.loaded * 100) / e.total
                 })
+                /*
+                if (e.loaded === e.total)
+                    this.setState({
+                        open: false
+                    })
+                */
             }
         })
     }
@@ -280,8 +285,18 @@ class FormNoticia extends Component {
                     dato.append('recurso', recurso)
                 )
                 try {
+                    this.setState({
+                        open: true
+                    })
                     const response = await (await this.api.post('noticia', dato)).data;
                     console.log(response)
+                    if (response.ok) {
+                        this.setState({ open: false })
+                        this.props.history.push('/admin/listar-noticias')
+                    }
+                    else {
+                        alert('problemas al registrar la noticia por faovr vuelva a intentarlo... :(')
+                    }
                 } catch (error) {
                     console.log(error)
                 }
@@ -317,136 +332,36 @@ class FormNoticia extends Component {
         }
     }
 
-    registrarInfografia = async (newid) => {
-        switch (this.state.tipo) {
-            case 'audio':
-                console.log(this.state.media[0])
-                let audio = new FormData();
-                audio.append('audio', this.state.media[0]);
-                const response = await this.api.post('infografia/audio', audio);
-                console.log(response)
-                /*
-                const infoaudio = {
-                    tipo: this.state.tipo,
-                    infografia: response.recurso,
-                    infotitulo: response.name,
-                    //infocontenido: this.state.infocontenido,
-                    infopie: 'pie',
-                    idnoticia: newid
-                }
-                console.log(infoaudio)
-                const resp = await this.api.post('infografia', infoaudio);
-                console.log(resp)
-                */
-                /*
-                                fetch(this.props.API + 'infografia/audio', {
-                                    method: 'post',
-                                    body: audio,
-                                    headers: {
-                                        'x-access-token': localStorage.getItem('tokencito')
-                                    }
-                                }).then((response) => {
-                                    return response.json()
-                                }).then(async (response) => {
-                                    console.log(response)
-                                    const infoaudio = {
-                                        tipo: this.state.tipo,
-                                        infografia: response.recurso,
-                                        infotitulo: response.name,
-                                        //infocontenido: this.state.infocontenido,
-                                        infopie: 'pie',
-                                        idnoticia: newid
-                                    }
-                                    console.log(infoaudio)
-                                    const resp = await this.api.post('infografia', infoaudio);
-                                    console.log(resp)
-                                })
-                                */
-                break;
-            case 'video':
-                if (this.state.tipoinfografia) {
-                    const infovideo = {
-                        tipo: 'video_url',
-                        infografia: this.state.urlinfografia,
-                        infotitulo: '',
-                        //infocontenido: this.state.infocontenido,
-                        infopie: 'pie',
-                        idnoticia: newid
-                    }
-                    console.log(infovideo)
-                    const resp = await this.api.post('infografia', infovideo);
-                    console.log(resp)
-                }
-                else {
-                    console.log(this.state.media[0])
-                    const video = new FormData();
-                    video.append('video', this.state.media[0]);
-                    fetch(this.props.API + 'infografia/video', {
-                        method: 'post',
-                        body: video,
-                        headers: {
-                            'x-access-token': localStorage.getItem('tokencito')
-                        }
-                    }).then((response) => {
-                        return response.json()
-                    }).then(async (response) => {
-                        console.log(response)
-                        const infovideo = {
-                            tipo: 'video_archivo',
-                            infografia: response.recurso,
-                            infotitulo: response.name,
-                            //infocontenido: this.state.infocontenido,
-                            infopie: 'pie',
-                            idnoticia: newid
-                        }
-                        console.log(infovideo)
-                        const resp = await this.api.post('infografia', infovideo);
-                        console.log(resp)
-                    })
-                }
-                break;
-            case 'image':
-                this.state.media.map((recurso) => {
-                    console.log(recurso)
-                    const imagen = new FormData();
-                    imagen.append('imagen', recurso);
-                    fetch(this.props.API + 'infografia/images', {
-                        method: 'post',
-                        body: imagen,
-                        headers: {
-                            'x-access-token': this.props.TOKEN
-                        }
-                    }).then((response) => {
-                        return response.json()
-                    }).then(async (response) => {
-                        console.log(response)
-                        const infoimagen = {
-                            tipo: this.state.tipo,
-                            infografia: response.recurso,
-                            infotitulo: response.name,
-                            //infocontenido: this.state.infocontenido,
-                            infopie: 'pie',
-                            idnoticia: newid
-                        }
-                        console.log(infoimagen)
-                        const resp = await this.api.post('infografia', infoimagen);
-                        console.log(resp)
-                    })
-                    return 0;
-                })
-                break;
-            default:
-                break;
-        }
-    }
-
-
-
     render() {
         return (
             <Fragment>
+                <Dialog
+                    open={this.state.open}
+                    disableBackdropClick={true}
+                    disableEscapeKeyDown={true}
+                    //onClose={this.setState({ open: false })}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                >
+                    <DialogTitle id="alert-dialog-title" className='text-center' style={{ color: 'f50057' }}>
+                        {Math.round(this.state.progreso)} %
+                    </DialogTitle>
+                    <center className='m-3'>
+                        {this.state.progreso === 100 ?
+                            <span>
+                                <Typography color='primary'>
+                                    Registro realizado correctamente..
+                                </Typography>
+                                <CheckIcon style={{ fontSize: '150px', color: 'green' }} />
+                            </span>
+                            :
+                            <CircularProgress className='m-3' thickness={3.6} size='8rem' variant="determinate" value={this.state.progreso}
+                                color="secondary" />
+                        }
+                    </center>
+
+                </Dialog>
                 <Paper my={2} className='p-3 mb-2'>
-                    <LinearProgress className='m-3' variant="determinate" value={this.state.progreso} color="secondary" />
                     <Row>
                         <Col lg='1'>
                             <aside style={{
