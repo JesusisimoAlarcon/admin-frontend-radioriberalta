@@ -3,9 +3,6 @@ import PageTitle from '../../../../Layout/AppMain/PageTitle'
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group'
 import MaterialTable from 'material-table'
 import { connect } from 'react-redux';
-import {
-    FormGroup
-} from 'reactstrap';
 import ModalRegistro from './modalRegistro'
 import Axios from 'axios'
 import { format } from 'date-fns/esm';
@@ -110,14 +107,15 @@ class FormProgramacion extends Component {
                     transitionAppearTimeout={0}
                     transitionEnter={false}
                     transitionLeave={false}>
-                    <FormGroup>
+
+
+                    <Paper square className='mb-3'>
+
                         <ModalRegistro
                             handleList={this.recargar}
                             API={this.props.API}
                         />
-                    </FormGroup>
 
-                    <Paper square className='mb-3'>
                         <Tabs
                             value={this.state.tab}
                             indicatorColor="secondary"
@@ -136,7 +134,11 @@ class FormProgramacion extends Component {
                                 <Tab key={index} label={dia} {...a11yProps(index)} />
                             )}
                         </Tabs>
-                        <TabPanel value={this.state.tab} index={this.state.tab}>
+                        <TabPanel
+                            className='p-3'
+                            value={this.state.tab}
+                            index={this.state.tab}
+                        >
                             <MaterialTable
                                 //title={'Programacion ' + this.state.dias[this.state.tab]}
                                 columns={[
@@ -179,8 +181,7 @@ class FormProgramacion extends Component {
                                                         this.setState({
                                                             tab: this.state.dias.indexOf(rowData.diasemana)
                                                         })
-                                                    }
-                                                    }
+                                                    }}
                                                 />
                                             </div>
                                     }
@@ -204,10 +205,7 @@ class FormProgramacion extends Component {
                                 }}
                             />
                         </TabPanel>
-
-
                     </Paper>
-
                 </ReactCSSTransitionGroup>
             </Fragment>
         )

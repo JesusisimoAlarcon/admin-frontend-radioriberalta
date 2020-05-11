@@ -25,8 +25,7 @@ class Login extends Component {
         this.state = {
             usuario: '',
             password: '',
-            show: false,
-
+            show: false
         }
     }
 
@@ -53,9 +52,13 @@ class Login extends Component {
             const resp = await (await Axios.get(`${this.props.API}usuario/${this.state.usuario}/${this.state.password}`)).data;
             if (resp.auth) {
                 const usuario = jwt.decode(resp.token).user;
+                console.log(usuario)
                 this.notificacion(`Bienvenido ${usuario.nombres}`, 'success');
                 this.props.setToken(resp.token);
-                this.props.history.push('/admin');
+                if (!usuario.fotografia)
+                    this.props.history.push('/admin/perfil');
+                else
+                    this.props.history.push('/admin');
             }
             else {
                 this.notificacion(resp.message, 'error')

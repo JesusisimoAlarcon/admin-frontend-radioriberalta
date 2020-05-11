@@ -9,7 +9,11 @@ import Programacion2 from './Admin/Programacion';
 import FormNoticia from './Admin/Noticia';
 import ListNoticias from './Admin/NoticiasList';
 import Admin from './Admin';
-
+import Usuario from './Admin/Usuario';
+import Seccion from './Admin/Seccion';
+import Configuracion from './Admin/Configuracion';
+import Extras from './Admin/Extras';
+import Perfil from './Admin/Perfil';
 const RR = ({ match }) => {
     return (
         <Fragment>
@@ -28,6 +32,13 @@ const RR = ({ match }) => {
                             <Route path={`${match.url}/programa`} component={Programa} />
                             <Route path={`${match.url}/conductor`} component={Conductor} />
                             <Route path={`${match.url}/programacion`} component={Programacion2} />
+
+
+                            <Route path={`${match.url}/usuarios`} component={Usuario} />
+                            <Route path={`${match.url}/confignoticia`} component={Configuracion} />
+                            <Route path={`${match.url}/secciones`} component={Seccion} />
+                            <Route path={`${match.url}/extras`} component={Extras} />
+                            <Route path={`${match.url}/perfil`} component={Perfil} />
                         </Switch>
                     </div>
                 </div>

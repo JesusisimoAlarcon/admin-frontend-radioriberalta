@@ -1,6 +1,6 @@
-import axios from 'axios'
+//import axios from 'axios'
 import sideBar6 from '../assets/utils/images/sidebar/city1.jpg';
-import * as moment from 'moment';
+//import * as moment from 'moment';
 export const SET_TOKEN = 'THEME_OPTIONS/SET_ENABLE_BACKGROUND_IMAGE';
 
 export const SET_ENABLE_BACKGROUND_IMAGE = 'THEME_OPTIONS/SET_ENABLE_BACKGROUND_IMAGE';
@@ -158,13 +158,14 @@ const initialState = {
 
 export default function reducer(state = initialState, action) {
 
+    /*
     state.hoydia = state.diasTabs[state.hoy];
     axios.get(state.API_REST + 'seccion/navs').then(response => {
         return response.data;
     }).then(response => {
         state.secciones = response
     })
-
+    
 
     axios.get(state.API_REST + 'programacion/detalle').then(response => {
         return response.data;
@@ -191,6 +192,7 @@ export default function reducer(state = initialState, action) {
         })
         state.programacion = response
     })
+    */
     switch (action.type) {
         case SET_TOKEN:
             return {

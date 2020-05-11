@@ -1,14 +1,14 @@
 import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux';
 import {
-    Card, CardBody, Row, Col,
+    Row, Col,
     FormGroup, Input
 } from 'reactstrap';
 import PageTitle from '../../../../Layout/AppMain/PageTitle';
 import MaterialTable from 'material-table'
 import ModalRegistro from './modalRegistro';
 import Axios from 'axios';
-import { TextareaAutosize } from '@material-ui/core';
+import { TextareaAutosize, Paper } from '@material-ui/core';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 class FormPrograma extends Component {
 
@@ -69,78 +69,75 @@ class FormPrograma extends Component {
                     transitionLeave={false}>
                     <Row>
                         <Col md="12">
-                            <Card className="main-card mb-3">
-                                <CardBody>
-                                    <FormGroup>
-                                        <ModalRegistro
-                                            handleList={this.recargar}
-                                            generos={this.state.generos}
-                                        />
-                                    </FormGroup>
-                                    <FormGroup>
-                                        <MaterialTable
-                                            title="Programas registrados"
-                                            tableRef={this.tableRef}
-                                            columns={[
-                                                {
-                                                    title: 'GENERO',
-                                                    field: 'genero',
+                            <Paper>
 
-                                                    editComponent: props => (
-                                                        <Input type="select" bsSize="sm"
-                                                            onChange={e => props.onChange(e.target.value)}>
-                                                            <option>Seleccion un genero...</option>
-                                                            {this.state.generos.map(genero =>
-                                                                <option key={genero.idgenero} value={genero.idgenero}>{genero.genero}</option>
-                                                            )}
-                                                        </Input>
-                                                    ),
-                                                    render: rowData => (
-                                                        <small><i className={rowData.icono + ' pe-2x pe-spin mr-3'}></i>{rowData.genero}</small>
-                                                    )
-                                                },
-                                                { title: 'PROGRAMA', field: 'programa' },
-                                                {
-                                                    title: 'DESCRIPCION', field: 'descripcion', editComponent: props => (
-                                                        <TextareaAutosize
-                                                            className='form-control'
-                                                            value={props.value}
-                                                            onChange={e => props.onChange(e.target.value)}
-                                                        />
-                                                    )
-                                                },
-                                            ]}
-                                            data={this.state.programas}
-                                            options={{
-                                                search: true,
-                                                paging: false
-                                            }}
-                                            editable={{
-                                                onRowUpdate: (newData, oldData) =>
-                                                    new Promise((resolve, reject) => {
-                                                        setTimeout(async () => {
-                                                            await this.api.put('programa/' + oldData.idprograma, {
-                                                                idgenero: newData.genero,
-                                                                programa: newData.programa,
-                                                                descripcion: newData.descripcion
-                                                            });
-                                                            this.getDatos();
-                                                            resolve()
-                                                        }, 1000)
-                                                    }),
-                                                onRowDelete: oldData =>
-                                                    new Promise((resolve, reject) => {
-                                                        setTimeout(async () => {
-                                                            await this.api.delete('programa/' + oldData.idprograma);
-                                                            this.getDatos();
-                                                            resolve()
-                                                        }, 1000)
-                                                    })
-                                            }}
-                                        />
-                                    </FormGroup>
-                                </CardBody>
-                            </Card>
+                                <ModalRegistro
+                                    handleList={this.recargar}
+                                    generos={this.state.generos}
+                                />
+                                <FormGroup>
+                                    <MaterialTable
+                                        title="Programas registrados"
+                                        tableRef={this.tableRef}
+                                        columns={[
+                                            {
+                                                title: 'GENERO',
+                                                field: 'genero',
+
+                                                editComponent: props => (
+                                                    <Input type="select" bsSize="sm"
+                                                        onChange={e => props.onChange(e.target.value)}>
+                                                        <option>Seleccion un genero...</option>
+                                                        {this.state.generos.map(genero =>
+                                                            <option key={genero.idgenero} value={genero.idgenero}>{genero.genero}</option>
+                                                        )}
+                                                    </Input>
+                                                ),
+                                                render: rowData => (
+                                                    <small><i className={rowData.icono + ' pe-2x pe-spin mr-3'}></i>{rowData.genero}</small>
+                                                )
+                                            },
+                                            { title: 'PROGRAMA', field: 'programa' },
+                                            {
+                                                title: 'DESCRIPCION', field: 'descripcion', editComponent: props => (
+                                                    <TextareaAutosize
+                                                        className='form-control'
+                                                        value={props.value}
+                                                        onChange={e => props.onChange(e.target.value)}
+                                                    />
+                                                )
+                                            },
+                                        ]}
+                                        data={this.state.programas}
+                                        options={{
+                                            search: true,
+                                            paging: false
+                                        }}
+                                        editable={{
+                                            onRowUpdate: (newData, oldData) =>
+                                                new Promise((resolve, reject) => {
+                                                    setTimeout(async () => {
+                                                        await this.api.put('programa/' + oldData.idprograma, {
+                                                            idgenero: newData.genero,
+                                                            programa: newData.programa,
+                                                            descripcion: newData.descripcion
+                                                        });
+                                                        this.getDatos();
+                                                        resolve()
+                                                    }, 1000)
+                                                }),
+                                            onRowDelete: oldData =>
+                                                new Promise((resolve, reject) => {
+                                                    setTimeout(async () => {
+                                                        await this.api.delete('programa/' + oldData.idprograma);
+                                                        this.getDatos();
+                                                        resolve()
+                                                    }, 1000)
+                                                })
+                                        }}
+                                    />
+                                </FormGroup>
+                            </Paper>
                         </Col>
                     </Row>
                 </ReactCSSTransitionGroup>

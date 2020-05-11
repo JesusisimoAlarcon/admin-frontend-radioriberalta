@@ -1,6 +1,8 @@
 import React from 'react';
 import { Modal, ModalHeader, ModalBody, ModalFooter, Form, FormGroup, Label, Input, FormText, Button } from 'reactstrap';
 import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import { Fab } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 class ModalRegistro extends React.Component {
     constructor(props) {
         super(props);
@@ -28,9 +30,6 @@ class ModalRegistro extends React.Component {
             genero: e.target.value
         })
     }
-
-
-
     onSubmit = async (e) => {
         e.preventDefault();
         this.setState({
@@ -45,7 +44,14 @@ class ModalRegistro extends React.Component {
 
         return (
             <span className="d-inline-block mb-2 mr-2">
-                <Button color="dark" onClick={this.toggle}>Nuevo programa</Button>
+                <Fab
+                    className='m-3'
+                    color='secondary'
+                    onClick={this.toggle}
+                >
+                    <AddIcon />
+                </Fab>
+
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <Form onSubmit={this.onSubmit}>
                         <ModalHeader toggle={this.toggle}>DATOS DEL PROGRAMA</ModalHeader>
@@ -78,7 +84,7 @@ class ModalRegistro extends React.Component {
                                 <Input type="select" bsSize="sm" id="selectgenero" name='genero' onChange={this.onSelectChange}>
                                     <option value={0}>Seleccione un genero...</option>
                                     {generos.map(genero =>
-                                        <option key={genero.idgenero} value={genero.idgenero}>{genero.idgenero + ' - ' + genero.genero}</option>
+                                        <option key={genero.idgenero} value={genero.idgenero}>{genero.genero}</option>
                                     )}
                                 </Input>
                                 <FormText>Ejemplo: Musica variada, noticias o enlaces.</FormText>

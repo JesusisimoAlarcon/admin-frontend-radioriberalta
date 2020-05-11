@@ -92,6 +92,8 @@ class FormNoticia extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            boton: false,
+            secciones: '',
             open: false,
             progreso: 0,
             autor: jwt.decode(this.props.TOKEN).user,
@@ -104,7 +106,6 @@ class FormNoticia extends Component {
             tipo: 'tipo',
             seccion: 0,
             pieportada: '',
-            secciones: this.props.SECCIONES,
             titulo: '',
             subtitulo: '',
             contenido: '',
@@ -114,19 +115,11 @@ class FormNoticia extends Component {
             prioridad: 2,
             hover: -1,
             labels: {
-                //1: 'noticia normal',
-                //2: 'noticia secundaria',
-                //3: 'primera plana',
-                0.5: 'Normal',
-                1: 'Useless+',
-                1.5: 'Poor',
-                2: 'Poor+',
-                2.5: 'Ok',
-                3: 'Ok+',
-                3.5: 'Good',
-                4: 'Good+',
-                4.5: 'Excellent',
-                5: 'Primera plana',
+                1: 'noticia',
+                2: 'noticia cuarta plana',
+                3: 'noticia tercera plana',
+                4: 'noticia segunda plana',
+                5: 'noticia primera plana'
             },
             etiquetas: []
         }
@@ -145,15 +138,16 @@ class FormNoticia extends Component {
                 this.setState({
                     progreso: (e.loaded * 100) / e.total
                 })
-                /*
-                if (e.loaded === e.total)
-                    this.setState({
-                        open: false
-                    })
-                */
             }
         })
     }
+
+    async componentDidMount() {
+        const secciones = await (await this.api.get('seccion/navs')).data;
+        this.setState({ secciones })
+    }
+
+
     notifycorrecto = () => {
         this.toastId =
             toast("Registro realizo de forma correcta", {
@@ -178,10 +172,7 @@ class FormNoticia extends Component {
         this.setState({
             foto: file
         });
-        console.log(file[0])
     }
-
-
     onPreviewDrop2 = (file) => {
         this.setState({
             media: file
@@ -189,9 +180,6 @@ class FormNoticia extends Component {
         console.log(file)
         console.log(this.state.media)
     }
-
-
-
     openDialog = () => {
         if (this.dropzoneRef.current) {
             this.dropzoneRef.current.open()
@@ -203,9 +191,6 @@ class FormNoticia extends Component {
             this.dropzoneRef2.current.open()
         }
     };
-
-
-
     checkedChange = (e) => {
         this.setState({
             [e.target.name]: e.target.checked,
@@ -214,7 +199,6 @@ class FormNoticia extends Component {
         })
         console.log(e.target.checked)
     }
-
     inputChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
@@ -227,7 +211,6 @@ class FormNoticia extends Component {
     setContenido = (event, editor) => {
         this.setState({ contenido: editor.getData() })
     }
-
     verificarcampos() {
         if (this.state.foto === '' || this.state.seccion === 0 ||
             this.state.tipo === 'tipo' || this.state.titulo === '' ||
@@ -252,6 +235,7 @@ class FormNoticia extends Component {
     registrar = async (event) => {
         console.log(this.verificarcampos())
         if (this.verificarcampos()) {
+            this.setState({ boton: true })
             const newNoticia = {
                 titulo: this.state.titulo,
                 subtitulo: this.state.subtitulo,
@@ -275,7 +259,6 @@ class FormNoticia extends Component {
                 dato.append('tipoinfografia', this.state.tipo);
                 dato.append('urlinfografia', this.state.tipo === 'video' ? this.state.urlinfografia : '');
                 console.log(this.state.media)
-                //dato.append('recurso', this.state.media)
                 if (this.state.tipo === 'nota' || this.state.urlinfografia) {
                     this.setState({
                         media: ''
@@ -300,38 +283,14 @@ class FormNoticia extends Component {
                 } catch (error) {
                     console.log(error)
                 }
-
-                /*
-                const response = await fetch(this.props.API + 'noticia', {
-                    method: 'post',
-                    body: dato,
-                    headers: {
-                        'x-access-token': this.props.TOKEN,
-                        'Access-Control-Allow-Origin': 'http://localhost:3000'
-                    }
-                });
-                */
-                //const test = await response.json();
             } catch (error) {
                 console.log(error)
             }
-            /*const response = await fetch(this.props.API + 'noticia', {
-                method: 'post',
-                body: dato,
-                headers: {
-                    'x-access-token': this.props.TOKEN
-                }
-            });
-            */
-            //const data = await response.json();
-
-            //this.registrarInfografia(data.insertId)
         }
         else {
             this.notifyvalidacion()
         }
     }
-
     render() {
         return (
             <Fragment>
@@ -355,11 +314,10 @@ class FormNoticia extends Component {
                                 <CheckIcon style={{ fontSize: '150px', color: 'green' }} />
                             </span>
                             :
-                            <CircularProgress className='m-3' thickness={3.6} size='8rem' variant="determinate" value={this.state.progreso}
+                            <CircularProgress className='mt-0 mb-3 ml-3 mr-3' thickness={3.6} size='8rem' variant="determinate" value={this.state.progreso}
                                 color="secondary" />
                         }
                     </center>
-
                 </Dialog>
                 <Paper my={2} className='p-3 mb-2'>
                     <Row>
@@ -389,7 +347,6 @@ class FormNoticia extends Component {
                                 </div>
                             </aside>
                         </Col>
-
                         <Col lg='11'>
                             <Row>
                                 <Col lg='8'>
@@ -426,7 +383,6 @@ class FormNoticia extends Component {
                                             );
                                         }}
                                     </Dropzone>
-
                                     <TextareaAutosize
                                         name='pieportada'
                                         className='form-control'
@@ -475,27 +431,20 @@ class FormNoticia extends Component {
                                             value={this.state.seccion}
                                             onChange={this.inputChange}
                                             size='small'
-                                        //onChange={onChangeSeccion}
                                         >
                                             <MenuItem value={0}>Seccion</MenuItem>
-                                            {this.props.SECCIONES.map(sec =>
+                                            {this.state.secciones && this.state.secciones.map(sec =>
                                                 <MenuItem key={sec.id} value={sec.id}>
                                                     <Chip size="small" label={sec.label} />
                                                 </MenuItem>
                                             )}
                                         </Select>
-
-
                                         <MuiPickersUtilsProvider utils={DateFnsUtils} locale={esLocale}>
-
                                             <DateTimePicker
-                                                //inputVariant="outlined"
                                                 variant='inline '
                                                 autoOk
                                                 size='small'
                                                 ampm={false}
-
-                                                //className='form-control'
                                                 format="dd MMM yyyy HH:mm"
                                                 disableFuture
                                                 value={this.state.fecha}
@@ -505,7 +454,6 @@ class FormNoticia extends Component {
                                                     })
                                                 }}
                                                 InputProps={{
-                                                    //fullWidth: '10px',
                                                     endAdornment: (
                                                         <InputAdornment position="start">
                                                             <IconButton>
@@ -515,12 +463,8 @@ class FormNoticia extends Component {
                                                     ),
                                                 }}
                                             />
-
                                         </MuiPickersUtilsProvider>
-
                                     </Grid>
-
-
                                     <TextareaAutosize
                                         name='titulo'
                                         className='form-control'
@@ -535,7 +479,6 @@ class FormNoticia extends Component {
                                         rowsMin={3}
                                         placeholder='Titulo de la noticia'
                                     />
-
                                     <TextareaAutosize
                                         name='subtitulo'
                                         className='form-control'
@@ -551,7 +494,6 @@ class FormNoticia extends Component {
                                         rowsMin={3}
                                         placeholder='Subtitulo o resumen de la noticia'
                                     />
-
                                     <div>
                                         <ListItem>
                                             <ListItemAvatar>
@@ -567,7 +509,6 @@ class FormNoticia extends Component {
                                             />
                                         </ListItem>
                                     </div>
-
                                     <center>
                                         <Rating
                                             name="hover-feedback"
@@ -591,30 +532,21 @@ class FormNoticia extends Component {
                                             </Box>
                                         }
                                     </center>
-
                                     <ChipInput
-                                        //defaultValue={}
+                                        color='secondary'
                                         value={this.state.etiquetas}
                                         onAdd={(chip) => {
-                                            //this.setState({ etiquetas: this.state.etiquetas.push(chip) })
-                                            const newetiquetas = this.state.etiquetas;
-                                            newetiquetas.push(chip)
-                                            //this.state.etiquetas.push(chip)
+                                            this.state.etiquetas.push(chip);
                                             this.setState({
-                                                etiquetas: newetiquetas
-                                                //...etiquetas.push(chip)
+                                                etiquetas: this.state.etiquetas
                                             })
-                                            //console.log(this.state.etiquetas)
                                         }}
                                         onDelete={(chip, index) => {
-                                            //this.setState({ etiquetas: this.state.etiquetas.slice(index, 1) })
                                             const newetiquetas = this.state.etiquetas;
                                             newetiquetas.splice(index, 1)
                                             this.setState({
                                                 etiquetas: newetiquetas
                                             })
-
-                                            //console.log(this.state.etiquetas)
                                         }}
                                         fullWidth
                                         label='Palabras clave o etiquetas'
@@ -889,10 +821,9 @@ class FormNoticia extends Component {
                                         position: 'sticky',
                                         top: '70px'
                                     }}>
-
-
                                         <Fab
                                             color='secondary'
+                                            disabled={this.state.boton}
                                             onClick={this.registrar}
                                             style={{
                                                 position: 'fixed',

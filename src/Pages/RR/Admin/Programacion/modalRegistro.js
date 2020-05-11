@@ -18,6 +18,8 @@ import esLocale from 'date-fns/locale/es';
 import DateFnsUtils from "@date-io/date-fns";
 import { MuiPickersUtilsProvider, KeyboardTimePicker } from "@material-ui/pickers";
 import { Avatar, Select, MenuItem, ListItem, ListItemAvatar, ListItemText } from '@material-ui/core';
+import { Fab } from '@material-ui/core';
+import AddIcon from '@material-ui/icons/Add';
 class ModalRegistro extends Component {
 
     constructor(props) {
@@ -86,7 +88,14 @@ class ModalRegistro extends Component {
         const { handleList } = this.props;
         return (
             <span className="d-inline-block mb-2 mr-2">
-                <Button color="dark" onClick={this.toggle}>Nueva programacion</Button>
+                <Fab
+                    className='m-3'
+                    color='secondary'
+                    onClick={this.toggle}
+                >
+                    <AddIcon />
+                </Fab>
+                
                 <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
                     <Form onSubmit={this.onSubmit}>
                         <ModalHeader toggle={this.toggle}>DATOS DEL PROGRAMA</ModalHeader>

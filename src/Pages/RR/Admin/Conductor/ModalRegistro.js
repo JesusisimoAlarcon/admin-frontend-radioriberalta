@@ -5,16 +5,13 @@ import FacebookIcon from '@material-ui/icons/Facebook';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import InstagramIcon from '@material-ui/icons/Instagram';
-
 import AddIcon from '@material-ui/icons/Add';
-
 import { green, lightBlue, purple } from '@material-ui/core/colors';
 import Dropzone from 'react-dropzone';
 import Avatar from '@material-ui/core/Avatar';
 class ModalRegistro extends React.Component {
     constructor(props) {
         super(props);
-
         this.state = {
             newConductor: {
                 nombres: '',
@@ -90,11 +87,13 @@ class ModalRegistro extends React.Component {
     }
 
     render() {
-
         const { handleConductor } = this.props
         return (
             <div>
-                <Fab color='secondary' onClick={this.toggle}>
+                <Fab
+                    className='m-3'
+                    color='secondary'
+                    onClick={this.toggle}>
                     <AddIcon />
                 </Fab>
                 <Modal isOpen={this.state.modal} size='lg' toggle={this.toggle} className={this.props.className}>
@@ -113,7 +112,7 @@ class ModalRegistro extends React.Component {
                                             accept='image/*'
                                             multiple={false}
                                         >
-                                            
+
                                             {({ getRootProps, getInputProps, acceptedFiles }) => {
                                                 return (
                                                     <div>
@@ -122,19 +121,9 @@ class ModalRegistro extends React.Component {
                                                                 {...getInputProps()}
                                                             />
                                                             <Avatar
-
                                                                 src={this.state.fotografia.length > 0 ? URL.createObjectURL(this.state.fotografia[0]) : null}
                                                                 style={{ width: 150, height: 150 }}
                                                             />
-                                                            {/*}
-                                                    {acceptedFiles.map(file => (
-                                                        <Avatar
-                                                            key={file.name}
-                                                            src={URL.createObjectURL(file)}
-                                                            style={{ width: 200, height: 200 }}
-                                                        />
-                                                    ))}
-                                                    {*/}
                                                             <Button
                                                                 outline
                                                                 size='sm'

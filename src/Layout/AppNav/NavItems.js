@@ -1,4 +1,4 @@
-export const NoticiasTestNav = [   
+export const NoticiasTestNav = [
     {
         icon: 'pe-7s-medal',
         label: 'NOTICIAS',
@@ -10,10 +10,6 @@ export const NoticiasTestNav = [
             {
                 label: 'Ver mis noticias agregadas',
                 to: '#/admin/listar-noticias'
-            },
-            {
-                label: 'Quitar noticias',
-                to: '#/admin/quitar-noticia'
             }
         ]
     },
@@ -36,8 +32,36 @@ export const NoticiasTestNav = [
         ]
     },
     {
-        icon: 'pe-7s-radio',
+        icon: 'pe-7s-target',
         label: 'CONFIGURACION',
-        to: '#/nosotros/exterior'
+        content: [
+            {
+                label: 'Usuarios',
+                to: '#/admin/usuarios',
+            },
+            {
+                label: 'Noticia',
+                to: '#/admin/confignoticia',
+            },
+            {
+                label: 'Secciones',
+                to: '#/admin/secciones',
+            },
+            {
+                label: 'Extras',
+                to: '#/admin/extras',
+            }
+        ]
+    }
+    ,
+    {
+        icon: 'pe-7s-target',
+        label: 'PERFIL',
+        content: [
+            {
+                label: 'Actualizar datos',
+                to: '#/admin/perfil',
+            }
+        ]
     }
 ];
