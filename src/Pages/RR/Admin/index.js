@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { Paper, Typography, Avatar } from '@material-ui/core';
+import { Paper, Typography, Avatar, Button } from '@material-ui/core';
 import jwt from 'jsonwebtoken';
 class Admin extends Component {
     constructor(props) {
@@ -26,6 +26,7 @@ class Admin extends Component {
                         </center>
                         <h5>{this.state.usuario.nombres + ' ' + this.state.usuario.apellidos}</h5>
                         <Typography color='secondary'>{this.state.usuario.rol}</Typography>
+                        <Button variant='outlined' onClick={() => this.props.history.push('/admin/perfil')} color='secondary' size='small' className='m-2'>VER MIS DATOS</Button>
                     </div>
                 </Paper>
 

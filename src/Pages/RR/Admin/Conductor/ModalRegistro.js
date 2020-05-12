@@ -79,7 +79,6 @@ class ModalRegistro extends React.Component {
                 fotografia: this.state.fotografia
             }
         })
-
     }
     onSubmit = async (e) => {
         e.preventDefault();

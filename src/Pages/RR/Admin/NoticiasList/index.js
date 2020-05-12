@@ -23,7 +23,7 @@ class ListNoticias extends Component {
         super(props);
         this.state = {
             progreso: 0,
-            autor: jwt.decode(this.props.TOKEN).user.idconductor,
+            autor: jwt.decode(this.props.TOKEN).user,
             noticias: [],
             tipos: {
                 video: <VideocamIcon />,
@@ -46,8 +46,12 @@ class ListNoticias extends Component {
     }
 
     async componentDidMount() {
-        const noticias = await (await this.api.get('noticia/detalle/autor/' + this.state.autor)).data;
-        //const noticias = await (await this.api.get('noticia/detalle')).data;
+        let pointbreak = '';
+        if (this.state.autor.rol === 'ADMINISTRADOR')
+            pointbreak = 'noticia/detalle';
+        else
+            pointbreak = `noticia/detalle/autor/${this.state.autor.idconductor}`;
+        const noticias = await (await this.api.get(pointbreak)).data;
         this.setState({
             noticias
         })
@@ -119,13 +123,6 @@ class ListNoticias extends Component {
                                                 precision={0.5}
                                             /></div>
                                     },
-                                    /*
-                                    {
-                                        title: 'TIPO',
-                                        field: 'tipo',
-                                        render: rowData => <div>{rowData.tipo === 'audio' ? <VolumeUpIcon /> : rowData.tipo === 'video' ? <VideocamIcon /> : <DescriptionIcon />}<Chip size="small" label={rowData.seccion} /></div>
-                                    },
-                                    */
                                     {
                                         title: 'SECCION',
                                         field: 'seccion',
@@ -144,7 +141,6 @@ class ListNoticias extends Component {
                                         render: rowData =>
                                             <small>{rowData.subtitulo}</small>
                                     },
-                                    /*
                                     {
                                         title: 'AUTOR',
                                         field: 'autor',
@@ -158,7 +154,6 @@ class ListNoticias extends Component {
                                                 <small>{rowData.apellidos}</small>
                                             </div>
                                     },
-                                    */
                                     {
                                         title: 'ESTADO',
                                         field: 'estado',

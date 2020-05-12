@@ -6,7 +6,12 @@ import { connect } from 'react-redux';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import HeaderLogo from '../AppLogo';
 import jwt from 'jsonwebtoken';
-import { Avatar } from '@material-ui/core';
+import { Avatar, IconButton } from '@material-ui/core';
+import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
+import {
+    setToken
+} from '../../reducers/ThemeOptions';
+import { withRouter } from 'react-router-dom';
 class Header extends React.Component {
     constructor(props) {
         super(props);
@@ -54,6 +59,13 @@ class Header extends React.Component {
                                     <span>{this.state.usuario.rol}</span>
                                 </div>
                             </div>
+                            <IconButton color='primary'
+                                onClick={() => {
+                                    this.props.history.push('/signin');
+                                    this.props.setToken('');
+                                }}>
+                                <PowerSettingsNewIcon style={{ color: 'white' }} />
+                            </IconButton>
                         </div>
                     </div>
                 </ReactCSSTransitionGroup>
@@ -71,6 +83,8 @@ const mapStateToProps = state => ({
     API: state.ThemeOptions.API_REST
 });
 
-const mapDispatchToProps = dispatch => ({});
+const mapDispatchToProps = dispatch => ({
+    setToken: token => dispatch(setToken(token))
+});
 
-export default connect(mapStateToProps, mapDispatchToProps)(Header);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Header));

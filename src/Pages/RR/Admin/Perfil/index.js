@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react'
-import { Paper, Typography } from '@material-ui/core'
+import { Paper, Typography, Chip, Switch } from '@material-ui/core'
 import PageTitle from '../../../../Layout/AppMain/PageTitle';
-import { InputGroup, InputGroupAddon, FormGroup, Label, Input, FormText, Button, Row, Col } from 'reactstrap';
-import { Divider } from '@material-ui/core';
+import { InputGroup, InputGroupAddon, FormGroup, Label, Input, FormText, Row, Col } from 'reactstrap';
+import { Divider, Button } from '@material-ui/core';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import WhatsAppIcon from '@material-ui/icons/WhatsApp';
 import TwitterIcon from '@material-ui/icons/Twitter';
@@ -17,6 +17,10 @@ import {
     toast,
     Bounce
 } from 'react-toastify';
+import { withRouter } from 'react-router-dom';
+import {
+    setToken
+} from '../../../../reducers/ThemeOptions';
 class Perfil extends Component {
     constructor(props) {
         super(props);
@@ -26,7 +30,8 @@ class Perfil extends Component {
             password: '',
             passwordrepeat: '',
             idconductor: jwt.decode(this.props.TOKEN).user.idconductor,
-            fotografia: ''
+            fotografia: '',
+            listo_datos_personales: true
         }
         this.api = Axios.create({
             baseURL: this.props.API,
@@ -41,28 +46,47 @@ class Perfil extends Component {
     }
     async componentDidMount() {
         await this.getConductor();
+        this.verificarCamposPersonales();
+        this.setState({ user_update: !this.state.conductor.confirmado })
     }
 
     getConductor = async () => {
         const conductor = await (await this.api.get('conductor/user/' + this.state.idconductor)).data[0];
-        this.setState({ conductor })
-        //console.log(this.state.conductor)
-        //console.log(this.state.conductor['nombres'])
+        this.setState({ conductor });
     }
     onPreviewDrop = (file) => {
         this.setState({
             fotografia: file
         });
+        this.verificarCamposPersonales();
     }
     onInputChange = (e) => {
         let conductor = this.state.conductor;
         conductor[`${e.target.name}`] = e.target.value;
-        this.setState({
-            conductor
-        })
+        this.setState({ conductor })
+        this.verificarCamposPersonales();
+    }
+
+
+    onVerificarCampos = (conductor) => {
+        let bandera = true;
+        let verificar = Object.assign({}, conductor)
+        delete verificar.idconductor;
+        delete verificar.idusuario;
+        delete verificar.confirmado;
+        delete verificar.estado;
+        delete verificar.username;
+        delete verificar.fotografia;
+        for (const prop in verificar) {
+            if (!conductor[prop]) {
+                bandera = false;
+                break;
+            }
+        }
+        return bandera;
     }
     onInputPassword = (e) => {
-        this.setState({ [e.target.name]: e.target.value })
+        this.setState({ [e.target.name]: e.target.value });
     }
     openDialog = () => {
         if (this.dropzoneRef.current) {
@@ -79,11 +103,35 @@ class Perfil extends Component {
                 type
             });
     };
+    verificarCamposPersonales = () => {
+        this.setState({ listo_datos_personales: this.onVerificarCampos(this.state.conductor) && (this.state.fotografia || this.state.conductor.fotografia) })
+    }
+    enviar_actualizacion = async () => {
+        if (this.state.user_update) {
+            console.log('actualizar credenciales')
+            if (this.state.conductor.username && this.state.password && this.state.passwordrepeat) {
+                if (this.state.password === this.state.passwordrepeat) {
+                    console.log('verificacion correcta')
+                    await this.actualizar();
+                }
+                else {
+                    this.notifycorrecto('Revise y escribi bien su contraseña, no coinciden', 'error');
+                }
+            }
+            else {
+                this.notifycorrecto('por favor no deje campos vacios para sus credenciales', 'error');
+            }
+        }
+        else {
+            console.log('no actualizar credenciales')
+            await this.actualizar();
+        }
+    }
     actualizar = async () => {
         const dato = new FormData();
         if (this.state.fotografia)
             dato.append('imagen', this.state.fotografia[0]);
-        if (!this.state.conductor.confirmado) {
+        if (!this.state.conductor.confirmado || this.state.user_update) {
             await (await this.api.put('usuario/' + this.state.conductor.idusuario, {
                 username: this.state.conductor.username,
                 password: this.state.password,
@@ -98,7 +146,17 @@ class Perfil extends Component {
         const resp = await (await this.api.put('conductor/' + this.state.idconductor, dato)).data;
         if (resp.ok) {
             this.getConductor();
-            this.notifycorrecto("Actualizacion de datos de forma correcta. por favor vuelva a iniciar sesion para confirmar sus credenciales...", 'success');
+            if (this.state.user_update) {
+                this.notifycorrecto("Actualizacion de datos de forma correcta. por favor vuelva a iniciar sesion para confirmar sus credenciales...", 'success');
+                this.props.setToken('');
+                this.props.history.push('/signin');
+            }
+            else {
+                this.notifycorrecto("Actualizacion de datos de forma correcta.", 'success');
+                this.props.history.push('/admin');
+            }
+
+
         }
         else
             this.notifycorrecto("Ups algo salio mal, contactese con el administrador.. :(", 'error');
@@ -111,62 +169,8 @@ class Perfil extends Component {
                     subheading="Puede actualizar la informacion que se publica en la pagina de noticias."
                     icon="pe-7s-user text-primary"
                 />
-                {!this.state.conductor.fotografia &&
-                    <div className='text-center m-3'>
-                        <Typography color='secondary' variant='subtitle1'>
-                            {'Por protocolos de seguridad debe actualizar sus credenciales (usuario y contraseña) y completar sus datos personales para poder acceder a las funcionalidades del sistema, recuerde que los datos registrados se utilizan para la publicacion de su informacion en la pagina web de noticias de nuestra Radio Riberalta.'}
-                        </Typography>
-                    </div>
-                }
                 {this.state.conductor &&
                     < Paper className='p-3 mb-3'>
-                        {!this.state.conductor.fotografia &&
-                            <div>
-                                <Row>
-                                    <Col lg='4' sm='6'>
-                                        <FormGroup>
-                                            <Label for="inputusuario">Usuario</Label>
-                                            <Input
-                                                id="inputusuario"
-                                                bsSize='sm'
-                                                name='username'
-                                                value={this.state.conductor.username}
-                                                onChange={this.onInputChange}
-                                            />
-                                            <FormText>Ejemplo: La pua</FormText>
-                                        </FormGroup>
-                                    </Col>
-                                    <Col lg='4' sm='6'>
-                                        <FormGroup>
-                                            <Label for="inputpassword">Nueva Contraseña</Label>
-                                            <Input
-                                                id="inputpassword"
-                                                bsSize='sm'
-                                                name='password'
-                                                value={this.state.password}
-                                                onChange={this.onInputPassword}
-                                            />
-                                            <FormText>Ejemplo: pepitoperez</FormText>
-                                        </FormGroup>
-                                    </Col>
-                                    <Col lg='4' sm='6'>
-                                        <FormGroup>
-                                            <Label for="inputpasswordrepeat">Confirmar contraseña</Label>
-                                            <Input
-                                                id="inputpasswordrepeat"
-                                                bsSize='sm'
-                                                name='passwordrepeat'
-                                                value={this.state.passwordrepeat}
-                                                onChange={this.onInputPassword}
-                                            />
-                                            <FormText>Vuelva a escribir su contraseña</FormText>
-                                        </FormGroup>
-                                    </Col>
-                                </Row>
-                                <Divider className='m-3' />
-                            </div>
-                        }
-
                         <Row>
                             <Col lg='4'>
                                 <center>
@@ -178,7 +182,6 @@ class Perfil extends Component {
                                         accept='image/*'
                                         multiple={false}
                                     >
-
                                         {({ getRootProps, getInputProps, acceptedFiles }) => {
                                             return (
                                                 <div>
@@ -197,10 +200,10 @@ class Perfil extends Component {
                                                         />
 
                                                         <Button
-                                                            outline
-                                                            size='sm'
+                                                            size='small'
+                                                            variant='contained'
                                                             className='mt-2'
-                                                            color='info'
+                                                            color='primary'
                                                             onClick={this.openDialog}>
                                                             Buscar foto
                                                         </Button>
@@ -328,7 +331,64 @@ class Perfil extends Component {
                                 </InputGroup>
                             </Col>
                         </Row>
-
+                        <Row className='m-3'>
+                            <Col className='text-center'>
+                                <Switch disabled={!this.state.conductor.confirmado} onChange={() => this.setState({ user_update: !this.state.user_update })} value={this.state.user_update} />Desea actualizar sus credenciales?
+                            </Col>
+                        </Row>
+                        {(!this.state.conductor.confirmado || this.state.user_update) &&
+                            <div>
+                                <Row>
+                                    <Col lg='4' sm='6'>
+                                        <FormGroup>
+                                            <Label for="inputusuario">Usuario</Label>
+                                            <Input
+                                                id="inputusuario"
+                                                bsSize='sm'
+                                                name='username'
+                                                value={this.state.conductor.username}
+                                                onChange={this.onInputChange}
+                                            />
+                                            <FormText>Ejemplo: La pua</FormText>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col lg='4' sm='6'>
+                                        <FormGroup>
+                                            <Label for="inputpassword">Nueva Contraseña</Label>
+                                            <Input
+                                                id="inputpassword"
+                                                bsSize='sm'
+                                                name='password'
+                                                value={this.state.password}
+                                                onChange={this.onInputPassword}
+                                            />
+                                            <FormText>Ejemplo: pepitoperez</FormText>
+                                        </FormGroup>
+                                    </Col>
+                                    <Col lg='4' sm='6'>
+                                        <FormGroup>
+                                            <Label for="inputpasswordrepeat">Confirmar contraseña</Label>
+                                            <Input
+                                                id="inputpasswordrepeat"
+                                                bsSize='sm'
+                                                name='passwordrepeat'
+                                                value={this.state.passwordrepeat}
+                                                onChange={this.onInputPassword}
+                                            />
+                                            <FormText color='danger'>{this.state.password !== this.state.passwordrepeat ? 'Las contraseñas no coinciden' : ''}</FormText>
+                                        </FormGroup>
+                                    </Col>
+                                </Row>
+                                <Divider className='m-3' />
+                            </div>
+                        }
+                        {(!this.state.conductor.confirmado || this.state.user_update) &&
+                            <div className='text-center m-3'>
+                                <Typography color='secondary' variant='subtitle1'>
+                                    {'Por protocolos de seguridad debe actualizar sus credenciales (usuario y contraseña) y completar sus datos personales para poder acceder a las funcionalidades del sistema, recuerde que los datos registrados se utilizan para la publicacion de su informacion en la pagina web de noticias de nuestra Radio Riberalta.'}
+                                </Typography>
+                            </div>
+                        }
                         <Typography color='primary' className='text-center m-3' variant='subtitle1'>
                             {'No proporcione sus credenciales a terceras personas, la plataforma es de uso exclusivo y confidencial por lo que su acceso debe ser restringido, recuerde que lo estamos vigilando. Gracias ;)'}
                             {/*}
@@ -336,7 +396,12 @@ class Perfil extends Component {
                             <Checkbox checked={this.state.user_update} />{'Desea cambiar su contraseña?'}
                             {*/}
                             <br />
-                            <Button className='m-3' size='sm' type='submit' color='danger' onClick={this.actualizar} >Confirmar y actualizar</Button>
+                            {!this.state.listo_datos_personales &&
+                                <Chip color='secondary' size='small' className='mb-1' label={'No se permiten campos vacios.'} />
+                            }
+                            <br />
+                            <Button disabled={!this.state.listo_datos_personales} size='small'
+                                color='primary' variant='contained' onClick={this.enviar_actualizacion} >Confirmar y actualizar</Button>
                         </Typography>
 
                     </Paper>
@@ -352,5 +417,7 @@ const mapStateToProps = state => ({
     TOKEN: state.ThemeOptions.token
 });
 
-const mapDispatchToProps = dispatch => ({});
-export default connect(mapStateToProps, mapDispatchToProps)(Perfil);
+const mapDispatchToProps = dispatch => ({
+    setToken: token => dispatch(setToken(token))
+});
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Perfil));

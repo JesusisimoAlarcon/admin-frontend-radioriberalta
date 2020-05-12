@@ -52,8 +52,7 @@ export const NoticiasTestNav = [
                 to: '#/admin/extras',
             }
         ]
-    }
-    ,
+    },
     {
         icon: 'pe-7s-target',
         label: 'PERFIL',

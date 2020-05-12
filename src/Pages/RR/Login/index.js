@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { Row, Col, Form } from 'reactstrap'
 import { Paper, Typography, Container, FormGroup, Button, FormControl, InputLabel, OutlinedInput } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField';
-import logo from '../../../assets/utils/images/logo-inverse.png'
+import logo from '../../../assets/utils/images/logo_tentativo.png'
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
@@ -35,7 +35,7 @@ class Login extends Component {
                 transition: Bounce,
                 closeButton: true,
                 autoClose: 5000,
-                position: 'top-right',
+                position: 'top-center',
                 type
             });
     };
@@ -52,7 +52,6 @@ class Login extends Component {
             const resp = await (await Axios.get(`${this.props.API}usuario/${this.state.usuario}/${this.state.password}`)).data;
             if (resp.auth) {
                 const usuario = jwt.decode(resp.token).user;
-                console.log(usuario)
                 this.notificacion(`Bienvenido ${usuario.nombres}`, 'success');
                 this.props.setToken(resp.token);
                 if (!usuario.fotografia)
@@ -84,10 +83,10 @@ class Login extends Component {
 
                             <Paper variant='outlined' className='mt-3 pl-3 pr-3 pt-2 pb-3'>
                                 <Form>
-                                    <div className='text-center m-5'>
-                                        <img src={logo} alt='logo' />
+                                    <div className='text-center'>
+                                        <img width='60%' className='mt-3' src={logo} alt='logo' />
                                     </div>
-                                    <Typography color='secondary' style={{ fontWeight: 'bold' }} className='text-center m-3'>ADMINISTRACION<br />RADIO RIBERALTA | 94.7 FM</Typography>
+                                    <Typography color='secondary' style={{ fontWeight: 'bold' }} className='text-center m-3'>RADIO RIBERALTA | 94.7 FM</Typography>
                                     <FormGroup>
                                         <TextField
                                             className='m-2'
@@ -138,11 +137,11 @@ class Login extends Component {
                                     </Typography>
 
                                     <FormGroup>
-                                        <Button size='small' className='m-2' variant='outlined' color='secondary'>SOLICITAR DATOS</Button>
+                                        <Button onClick={() => { this.notificacion('Comuniquese con el administrador para que le proporcione sus credenciales de acceso', 'info')}} size='small' className='m-2' variant='outlined' color='secondary'>SOLICITAR DATOS</Button>
                                     </FormGroup>
 
                                     <Typography color='secondary' style={{ fontWeight: 'revert', fontSize: '0.7rem' }} className='text-center m-3'>
-                                        ©2020 Radio Riberalta | 94.7 FM
+                                        ©2020 Radio Riberalta | 94.7 FM, Todos los derechos reservados
                                     </Typography>
                                 </Form>
                             </Paper>
