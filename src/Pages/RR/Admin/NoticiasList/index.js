@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import Axios from 'axios';
-import MaterialTable from 'material-table'
+import MaterialTable from 'material-table';
 import { connect } from 'react-redux';
 import Avatar from '@material-ui/core/Avatar';
 import { format } from 'date-fns';
