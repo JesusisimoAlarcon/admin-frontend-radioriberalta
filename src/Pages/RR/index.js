@@ -7,6 +7,7 @@ import Conductor from './Admin/Conductor';
 import Programa from './Admin/Programa';
 import Programacion2 from './Admin/Programacion';
 import FormNoticia from './Admin/Noticia';
+import Noticia from './Admin/Noticia2';
 import ListNoticias from './Admin/NoticiasList';
 import Admin from './Admin';
 import Usuario from './Admin/Usuario';
@@ -27,6 +28,7 @@ const RR = ({ match }) => {
                             <Route exact path={`${match.url}`} component={Admin} />
                             {/* Administracion noticias */}
                             <Route path={`${match.url}/registrar-noticia`} component={FormNoticia} />
+                            <Route path={`${match.url}/registrar-noticia2/:id`} component={Noticia} />
                             <Route path={`${match.url}/listar-noticias`} component={ListNoticias} />
                             {/* Administracion programacion */}
                             <Route path={`${match.url}/programa`} component={Programa} />

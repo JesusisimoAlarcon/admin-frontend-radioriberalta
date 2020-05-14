@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react'
-import { Paper, Typography, Chip, Switch } from '@material-ui/core'
+import { Paper, Typography, Chip, Switch, Backdrop, CircularProgress } from '@material-ui/core'
 import PageTitle from '../../../../Layout/AppMain/PageTitle';
 import { InputGroup, InputGroupAddon, FormGroup, Label, Input, FormText, Row, Col } from 'reactstrap';
 import { Divider, Button } from '@material-ui/core';
@@ -21,6 +21,7 @@ import { withRouter } from 'react-router-dom';
 import {
     setToken
 } from '../../../../reducers/ThemeOptions';
+import CheckIcon from '@material-ui/icons/Check';
 class Perfil extends Component {
     constructor(props) {
         super(props);
@@ -31,7 +32,9 @@ class Perfil extends Component {
             passwordrepeat: '',
             idconductor: jwt.decode(this.props.TOKEN).user.idconductor,
             fotografia: '',
-            listo_datos_personales: true
+            listo_datos_personales: true,
+            progreso: 0,
+            open: false
         }
         this.api = Axios.create({
             baseURL: this.props.API,
@@ -39,7 +42,11 @@ class Perfil extends Component {
                 'x-access-token': this.props.TOKEN
             },
             onUploadProgress: (e) => {
-                //console.log(e.loaded)
+                console.log(e.loaded)
+                console.log(e.total)
+                this.setState({
+                    progreso: (e.loaded * 100) / e.total
+                })
             }
         });
         this.dropzoneRef = React.createRef();
@@ -143,20 +150,27 @@ class Perfil extends Component {
         delete this.state.conductor.confirmado
         delete this.state.conductor.estado
         dato.append('conductor', JSON.stringify(this.state.conductor));
+        this.setState({
+            open: true
+        })
         const resp = await (await this.api.put('conductor/' + this.state.idconductor, dato)).data;
         if (resp.ok) {
             this.getConductor();
             if (this.state.user_update) {
                 this.notifycorrecto("Actualizacion de datos de forma correcta. por favor vuelva a iniciar sesion para confirmar sus credenciales...", 'success');
+                this.setState({
+                    open: false
+                })
                 this.props.setToken('');
                 this.props.history.push('/signin');
             }
             else {
                 this.notifycorrecto("Actualizacion de datos de forma correcta.", 'success');
+                this.setState({
+                    open: false
+                })
                 this.props.history.push('/admin');
             }
-
-
         }
         else
             this.notifycorrecto("Ups algo salio mal, contactese con el administrador.. :(", 'error');
@@ -164,6 +178,18 @@ class Perfil extends Component {
     render() {
         return (
             <Fragment>
+                <Backdrop
+                    style={{
+                        zIndex: 1
+                    }}
+                    open={this.state.open}
+                >
+                    {this.state.progreso === 100 ?
+                        <CheckIcon style={{ fontSize: '100px', color: 'white' }} />
+                        :
+                        <CircularProgress className='mt-0 mb-3 ml-3 mr-3' thickness={2} size='8rem' variant="indeterminate" color="secondary" />
+                    }
+                </Backdrop>
                 <PageTitle
                     heading="Actualizacion de datos personales"
                     subheading="Puede actualizar la informacion que se publica en la pagina de noticias."

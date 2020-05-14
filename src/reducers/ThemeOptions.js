@@ -1,7 +1,7 @@
 //import axios from 'axios'
 import sideBar6 from '../assets/utils/images/sidebar/city1.jpg';
 //import * as moment from 'moment';
-export const SET_TOKEN = 'THEME_OPTIONS/SET_ENABLE_BACKGROUND_IMAGE';
+export const SET_TOKEN = 'THEME_OPTIONS/SET_TOKEN';
 
 export const SET_ENABLE_BACKGROUND_IMAGE = 'THEME_OPTIONS/SET_ENABLE_BACKGROUND_IMAGE';
 

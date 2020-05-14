@@ -4,7 +4,13 @@ import Fab from '@material-ui/core/Fab';
 import FacebookIcon from '@material-ui/icons/Facebook';
 import TwitterIcon from '@material-ui/icons/Twitter';
 import WhatsappIcon from '@material-ui/icons/WhatsApp';
-import { Paper, Divider, Tooltip, CardActionArea, TextareaAutosize, Input, Dialog, DialogTitle, CircularProgress, Typography } from '@material-ui/core';
+import {
+    Paper, Divider, Tooltip, CardActionArea, TextareaAutosize, Input,
+    //Dialog, DialogTitle,
+    CircularProgress,
+    //Typography,
+    Backdrop
+} from '@material-ui/core';
 import { Row, Col, Label } from 'reactstrap';
 import Grid from '@material-ui/core/Grid';
 import Chip from '@material-ui/core/Chip';
@@ -148,26 +154,17 @@ class FormNoticia extends Component {
     }
 
 
-    notifycorrecto = () => {
-        this.toastId =
-            toast("Registro realizo de forma correcta", {
-                transition: Bounce,
-                closeButton: true,
-                autoClose: 5000,
-                position: 'bottom-center',
-                type: 'success'
-            });
-    };
 
-
-    notifyvalidacion = () => this.toastId =
-        toast("Por favor complete los compos obligatorios para registrar una noticia.", {
+    notifyMensaje = (mensaje, type) => this.toastId =
+        toast(mensaje, {
             transition: Bounce,
             closeButton: true,
             autoClose: 5000,
             position: 'bottom-center',
-            type: 'error'
+            type
         });
+
+
     onPreviewDrop = (file) => {
         this.setState({
             foto: file
@@ -274,6 +271,7 @@ class FormNoticia extends Component {
                     const response = await (await this.api.post('noticia', dato)).data;
                     console.log(response)
                     if (response.ok) {
+                        this.notifyMensaje('Registro realizado de forma correcta :)', 'success')
                         this.setState({ open: false })
                         this.props.history.push('/admin/listar-noticias')
                     }
@@ -282,18 +280,20 @@ class FormNoticia extends Component {
                     }
                 } catch (error) {
                     console.log(error)
+                    this.notifyMensaje('Ups tenemos problemas con su conexion a internet, por favor vuelva a intentarlo.', 'warning')
                 }
             } catch (error) {
                 console.log(error)
             }
         }
         else {
-            this.notifyvalidacion()
+            this.notifyMensaje('Por favor complete los compos obligatorios para registrar una noticia.', 'error')
         }
     }
     render() {
         return (
             <Fragment>
+                {/*}
                 <Dialog
                     open={this.state.open}
                     disableBackdropClick={true}
@@ -319,7 +319,27 @@ class FormNoticia extends Component {
                         }
                     </center>
                 </Dialog>
+                {*/}
                 <Paper my={2} className='p-3 mb-2'>
+                    <Backdrop
+                        style={{
+                            zIndex: 1
+                        }}
+                        open={this.state.open}
+                    >
+                        {this.state.progreso === 100 ?
+                            <span>
+                                {/*}
+                                <Typography color='primary'>
+                                    {'Registro realizado correctamente..'}
+                                </Typography>
+                                {*/}
+                                <CheckIcon style={{ fontSize: '150px', color: 'white' }} />
+                            </span>
+                            :
+                            <CircularProgress className='mt-0 mb-3 ml-3 mr-3' thickness={3} size='8rem' variant="determinate" value={this.state.progreso} color="secondary" />
+                        }
+                    </Backdrop>
                     <Row>
                         <Col lg='1'>
                             <aside style={{

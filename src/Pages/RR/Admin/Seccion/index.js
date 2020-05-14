@@ -9,6 +9,7 @@ import {
     toast,
     Bounce
 } from 'react-toastify';
+
 import DeleteIcon from '@material-ui/icons/Delete';
 class Seccion extends Component {
     constructor(props) {

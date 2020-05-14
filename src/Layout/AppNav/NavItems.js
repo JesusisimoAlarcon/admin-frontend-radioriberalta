@@ -8,6 +8,10 @@ export const NoticiasTestNav = [
                 to: '#/admin/registrar-noticia'
             },
             {
+                label: 'Agregar nueva noticia 2',
+                to: '#/admin/registrar-noticia2'
+            },
+            {
                 label: 'Ver mis noticias agregadas',
                 to: '#/admin/listar-noticias'
             }
