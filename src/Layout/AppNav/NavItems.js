@@ -18,6 +18,20 @@ export const NoticiasTestNav = [
         ]
     },
     {
+        icon: 'pe-7s-medal',
+        label: 'PUBLICIDAD',
+        content: [
+            {
+                label: 'Agregar nueva publicidad',
+                to: '#/admin/publicidad'
+            },
+            {
+                label: 'Ver mis publicidades',
+                to: '#/admin/publicidad'
+            }
+        ]
+    },
+    {
         icon: 'pe-7s-target',
         label: 'PROGRAMACION',
         content: [

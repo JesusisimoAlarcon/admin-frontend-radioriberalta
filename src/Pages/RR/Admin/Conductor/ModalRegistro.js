@@ -52,11 +52,16 @@ class ModalRegistro extends React.Component {
         if (this.dropzoneRef.current) {
             this.dropzoneRef.current.open()
         }
-    };
+    }
     toggle() {
         this.setState({
             modal: !this.state.modal
         });
+    }
+    onInputChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
     }
     onInputChange = (e) => {
         this.setState({

@@ -15,6 +15,7 @@ import Seccion from './Admin/Seccion';
 import Configuracion from './Admin/Configuracion';
 import Extras from './Admin/Extras';
 import Perfil from './Admin/Perfil';
+import Publicidad from './Admin/Publicidad';
 const RR = ({ match }) => {
     return (
         <Fragment>
@@ -41,6 +42,7 @@ const RR = ({ match }) => {
                             <Route path={`${match.url}/secciones`} component={Seccion} />
                             <Route path={`${match.url}/extras`} component={Extras} />
                             <Route path={`${match.url}/perfil`} component={Perfil} />
+                            <Route path={`${match.url}/publicidad`} component={Publicidad} />
                         </Switch>
                     </div>
                 </div>
