@@ -8,7 +8,11 @@ import { format } from 'date-fns';
 import esLocale from 'date-fns/locale/es';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import ModalRegistro from './ModalRegistro'
-
+import { formatDistanceStrict } from 'date-fns';
+import {
+    toast,
+    Bounce
+} from 'react-toastify';
 class Publicidad extends Component {
     constructor(props) {
         super(props);
@@ -36,6 +40,16 @@ class Publicidad extends Component {
         const publicidades = await (await this.api.get('publicidad')).data;
         this.setState({ publicidades })
     }
+    notify = (mensaje, type) => {
+        this.toastId =
+            toast(mensaje, {
+                transition: Bounce,
+                closeButton: true,
+                autoClose: 5000,
+                position: 'bottom-center',
+                type
+            });
+    };
     render() {
         return (
             <Fragment>
@@ -44,7 +58,7 @@ class Publicidad extends Component {
                     subheading="Puede ver los registros publicitarios realizados para su publicacion en la pagina web."
                     icon="pe-7s-user text-primary"
                 />
-                <Paper>
+                <Paper className='mb-3'>
                     <ModalRegistro
                         confirmarRegistro={this.getPublicidades}
                     />
@@ -90,6 +104,12 @@ class Publicidad extends Component {
                                         </div>
                                 },
                                 {
+                                    title: 'CONCLUYE',
+                                    field: 'tiempo',
+                                    render: rowData =>
+                                        <small>{formatDistanceStrict(new Date(rowData.fecha_fin), new Date(rowData.fecha_inicio), { locale: esLocale, includeSeconds: true, addSuffix: true })}</small>
+                                },
+                                {
                                     title: 'PAGINA WEB',
                                     field: 'paginaweb',
                                     render: rowData =>
@@ -108,6 +128,7 @@ class Publicidad extends Component {
                                                     await this.api.put('publicidad/' + rowData.idpublicidad, {
                                                         estado: !rowData.estado
                                                     });
+                                                    this.notify(!rowData.estado ? 'La publicidad volvera a presentarse en la pagina' : 'La publicidad se quito de la pagina', !rowData.estado ? 'success' : 'warning');
                                                     this.getPublicidades();
                                                 }}
                                             />

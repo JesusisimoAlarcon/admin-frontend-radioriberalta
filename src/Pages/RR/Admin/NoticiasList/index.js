@@ -55,6 +55,7 @@ class ListNoticias extends Component {
         this.setState({
             noticias
         })
+        console.log(this.state.noticias)
     }
 
     render() {
