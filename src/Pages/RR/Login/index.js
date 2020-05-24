@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import { Row, Col, Form } from 'reactstrap'
 import { Paper, Typography, Container, FormGroup, Button, FormControl, InputLabel, OutlinedInput } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField';
-import logo from '../../../assets/utils/images/logo_tentativo.png'
+import logo from '../../../assets/utils/images/icono_logo.png'
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
