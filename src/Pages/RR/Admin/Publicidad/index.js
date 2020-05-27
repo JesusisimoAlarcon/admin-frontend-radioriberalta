@@ -13,6 +13,7 @@ import {
     toast,
     Bounce
 } from 'react-toastify';
+import ReactPlayer from 'react-player';
 class Publicidad extends Component {
     constructor(props) {
         super(props);
@@ -80,11 +81,40 @@ class Publicidad extends Component {
                                     field: 'publicidad',
                                     render: rowData =>
                                         <center>
-                                            <Avatar
-                                                src={this.props.API + 'static/publicidad/' + rowData.publicidad}
-                                                variant='rounded'
-                                                style={{ width: 160, height: 90 }}
-                                            />
+                                            {rowData.tipo === 'image' ?
+                                                <Avatar
+                                                    src={this.props.API + 'static/publicidad/' + rowData.publicidad}
+                                                    variant='rounded'
+                                                    style={{ width: 160, height: 90 }}
+                                                />
+                                                :
+                                                <div
+                                                    className='mb-3'
+                                                    style={{
+                                                        //position: 'relative',
+                                                        //paddingTop: '56.25%'
+                                                        height: 0,
+                                                        overflow: 'hidden',
+                                                        paddingBottom: '56.25%',
+                                                        paddingTop: '30px',
+                                                        position: 'relative'
+                                                    }}>
+                                                    <ReactPlayer
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: 0,
+                                                            left: 0,
+                                                            width: '100%',
+                                                            height: '100%'
+                                                        }}
+                                                        controls
+                                                        light={false}
+                                                        url={rowData.publicidad}
+                                                        width='100%'
+                                                        height='100%'
+                                                    />
+                                                </div>}
+
                                         </center>
                                 },
                                 {

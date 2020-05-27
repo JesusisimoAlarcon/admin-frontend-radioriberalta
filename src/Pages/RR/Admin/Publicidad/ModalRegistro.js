@@ -30,7 +30,7 @@ class ModalRegistro extends Component {
             publicidad: {
                 cliente: '',
                 publicidad: '',
-                tipo: '',
+                tipo: 'image',
                 paginaweb: '',
                 fecha_inicio: new Date(),
                 fecha_fin: new Date(),
@@ -83,9 +83,11 @@ class ModalRegistro extends Component {
     onRegistrar = async () => {
         if (this.onVerificarCampos(this.state.publicidad)) {
             const dato = new FormData();
-            dato.append('imagen', this.state.publicidad.publicidad[0]);
             let publicidad = Object.assign({}, this.state.publicidad)
-            delete publicidad.publicidad;
+            if (this.state.publicidad.tipo === 'image') {
+                dato.append('imagen', this.state.publicidad.publicidad[0]);
+                delete publicidad.publicidad;
+            }
             publicidad.fecha_inicio = format(this.state.publicidad.fecha_inicio, 'yyyy-MM-dd H:mm:ss')
             publicidad.fecha_fin = format(this.state.publicidad.fecha_fin, 'yyyy-MM-dd H:mm:ss')
             dato.append('publicidad', JSON.stringify(publicidad));
@@ -129,81 +131,112 @@ class ModalRegistro extends Component {
                         <ModalHeader className='text-center' toggle={this.toggle}>REGISTRO DE PUBLICIDAD</ModalHeader>
                         <ModalBody>
                             <center>
-                                <Dropzone
-                                    ref={this.dropzoneRef}
-                                    noClick
-                                    noKeyboard
-                                    onDrop={(file) => {
-                                        console.log(file[0].type)
-
+                                {'Tipo de Publicidad'}
+                                <br />
+                                {'Imagen'}
+                                <Switch
+                                    checked={
+                                        this.state.publicidad.tipo === 'video'
+                                    }
+                                    onChange={() => {
                                         let publicidad = this.state.publicidad;
-                                        publicidad.publicidad = file;
-                                        publicidad.tipo = file[0].type.split('/')[0]
-                                        this.setState({ publicidad })
+                                        publicidad.tipo === 'video' ? publicidad.tipo = 'image' : publicidad.tipo = 'video';
+                                        publicidad.publicidad = '';
+                                        this.setState({
+                                            publicidad
+                                        })
+                                        console.log(this.state.publicidad.tipo)
                                     }}
-                                    accept={['image/*', 'video/*']}
-                                    multiple={false}
-                                >
-                                    {({ getRootProps, getInputProps, acceptedFiles }) => {
-                                        return (
-                                            <div>
-                                                <div {...getRootProps({ className: 'dropzone' })}>
-                                                    <input
-                                                        {...getInputProps()}
-                                                    />
-                                                    {this.state.publicidad.tipo === 'video' ?
-                                                        <div
-                                                            className='mb-3'
-                                                            style={{
-                                                                //position: 'relative',
-                                                                //paddingTop: '56.25%'
-                                                                height: 0,
-                                                                overflow: 'hidden',
-                                                                paddingBottom: '56.25%',
-                                                                paddingTop: '30px',
-                                                                position: 'relative'
-                                                            }}>
-                                                            <ReactPlayer
-                                                                style={{
-                                                                    position: 'absolute',
-                                                                    top: 0,
-                                                                    left: 0,
-                                                                    width: '100%',
-                                                                    height: '100%'
-                                                                }}
-                                                                controls
-                                                                light={false}
-
-                                                                url={
-                                                                    this.state.publicidad.publicidad.length > 0 ? URL.createObjectURL(this.state.publicidad.publicidad[0]) : null
-                                                                }
-                                                                width='100%'
-                                                                height='100%'
-                                                            />
-                                                        </div>
-                                                        :
-                                                        this.state.publicidad.tipo === 'image' ?
-                                                            <Avatar
-                                                                src={this.state.publicidad.publicidad.length > 0 ? URL.createObjectURL(this.state.publicidad.publicidad[0]) : null}
-                                                                variant='rounded'
-                                                                style={{ width: 300, height: 200 }}
-                                                            />
-                                                            :
-                                                            'Seleccione el recurso para la publicidad, puede ser una imagen o video'
-                                                    }
-                                                    <Button
-                                                        variant='outlined'
-                                                        size='small'
-                                                        className='mt-2'
-                                                        color='primary'
-                                                        onClick={this.openDialog}>
-                                                        {'Buscar recurso'}
-                                                    </Button>
+                                />
+                                {'Video'}
+                            </center>
+                            <center>
+                                {this.state.publicidad.tipo === 'image' ?
+                                    <Dropzone
+                                        ref={this.dropzoneRef}
+                                        noClick
+                                        noKeyboard
+                                        onDrop={(file) => {
+                                            //console.log(file[0].type)
+                                            let publicidad = this.state.publicidad;
+                                            publicidad.publicidad = file;
+                                            //publicidad.tipo = file[0].type.split('/')[0]
+                                            this.setState({ publicidad })
+                                        }}
+                                        accept={'image/*'}
+                                        //accept={['image/*', 'video/*']}
+                                        multiple={false}
+                                    >
+                                        {({ getRootProps, getInputProps, acceptedFiles }) => {
+                                            return (
+                                                <div>
+                                                    <div {...getRootProps({ className: 'dropzone' })}>
+                                                        <input
+                                                            {...getInputProps()}
+                                                        />
+                                                        <Avatar
+                                                            src={
+                                                                this.state.publicidad.publicidad.length > 0 ? URL.createObjectURL(this.state.publicidad.publicidad[0]) : null}
+                                                            variant='rounded'
+                                                            style={{ width: 300, height: 200 }}
+                                                        />
+                                                        <Button
+                                                            variant='outlined'
+                                                            size='small'
+                                                            className='mt-2'
+                                                            color='primary'
+                                                            onClick={this.openDialog}>
+                                                            {'Buscar imagen'}
+                                                        </Button>
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        );
-                                    }}
-                                </Dropzone>
+                                            );
+                                        }}
+                                    </Dropzone>
+                                    :
+                                    <div>
+                                        <div
+                                            className='mb-3'
+                                            style={{
+                                                //position: 'relative',
+                                                //paddingTop: '56.25%'
+                                                height: 0,
+                                                overflow: 'hidden',
+                                                paddingBottom: '56.25%',
+                                                paddingTop: '30px',
+                                                position: 'relative'
+                                            }}>
+                                            <ReactPlayer
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: 0,
+                                                    width: '100%',
+                                                    height: '100%'
+                                                }}
+                                                controls
+                                                light={false}
+                                                url={
+                                                    this.state.publicidad.tipo === 'video' ?
+                                                        this.state.publicidad.publicidad : null
+                                                }
+                                                width='100%'
+                                                height='100%'
+                                            />
+                                        </div>
+                                        <FormGroup>
+                                            <Label for="inputvideoyoutube">URL Video</Label>
+                                            <Input
+                                                id="inputvideoyoutube"
+                                                bsSize='sm'
+                                                name='publicidad'
+                                                value={this.state.publicidad.tipo === 'video' ? this.state.publicidad.publicidad : ''}
+                                                onChange={this.onInputChange}
+                                            />
+                                            <FormText>Ejemplo: https://www.youtube.com/watch?v=RV6VEr</FormText>
+                                        </FormGroup>
+                                    </div>
+                                }
                             </center>
                             <FormGroup>
                                 <Label for="inputcliente">Cliente</Label>

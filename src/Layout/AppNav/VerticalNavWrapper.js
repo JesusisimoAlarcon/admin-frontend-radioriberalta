@@ -16,6 +16,7 @@ class Nav extends Component {
         if (this.state.user.rol === 'CONDUCTOR') {
             NoticiasTestNav.splice(1, 1);
             NoticiasTestNav.splice(1, 1);
+            NoticiasTestNav.splice(1, 1);
         }
         this.api = Axios.create({
             baseURL: this.props.API,
