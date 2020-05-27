@@ -137,7 +137,7 @@ class Publicidad extends Component {
                                     title: 'CONCLUYE',
                                     field: 'tiempo',
                                     render: rowData =>
-                                        <small>{formatDistanceStrict(new Date(rowData.fecha_fin), new Date(rowData.fecha_inicio), { locale: esLocale, includeSeconds: true, addSuffix: true })}</small>
+                                        <small>{formatDistanceStrict(new Date(rowData.fecha_fin), new Date(), { locale: esLocale, includeSeconds: true, addSuffix: true })}</small>
                                 },
                                 {
                                     title: 'PAGINA WEB',

@@ -24,10 +24,6 @@ export const NoticiasTestNav = [
             {
                 label: 'Agregar nueva publicidad',
                 to: '#/admin/publicidad'
-            },
-            {
-                label: 'Ver mis publicidades',
-                to: '#/admin/publicidad'
             }
         ]
     },
